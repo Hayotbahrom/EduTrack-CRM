@@ -8,13 +8,15 @@
 
   <ItemGroup>
     <Folder Include="IRepositories\" />
-    <Folder Include="DBContexts\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EduTrack.Domain\EduTrack.Domain.csproj" />
   </ItemGroup>
 
 </Project>
