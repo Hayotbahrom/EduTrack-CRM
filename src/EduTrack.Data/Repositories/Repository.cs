@@ -1,33 +1,50 @@
-﻿using EduTrack.Data.IRepositories;
+﻿using EduTrack.Data.DBContexts;
+using EduTrack.Data.IRepositories;
 using EduTrack.Domain.Commons;
+using Microsoft.EntityFrameworkCore;
 
 namespace EduTrack.Data.Repositories
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditable
     {
-        public Task<bool> DeleteAsync(long id)
+        private readonly EduDbContext _context;
+        private DbSet<TEntity> dbSet;
+        public Repository(EduDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+            dbSet = context.Set<TEntity>();
+        }
+        public async Task<bool> DeleteAsync(long id)
+        {
+            var result = await dbSet.FindAsync(id);
+            result.IsDeleted = 1;
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public Task<TEntity> InsertAsync(TEntity entity)
+        public async Task<TEntity> InsertAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            await dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
         public IQueryable<TEntity> SelectAll()
         {
-            throw new NotImplementedException();
+            return dbSet;
         }
 
-        public Task<TEntity> SelectByIdAsync(long id)
+        public async Task<TEntity> SelectByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            var result = await dbSet.Where(x => x.Id == id).FirstOrDefaultAsync();
+            return result;
         }
 
-        public Task<TEntity> UpdateAsync(TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            var result = (_context.Update(entity)).Entity;
+            await _context.SaveChangesAsync();
+            return result;
         }
     }
 }
