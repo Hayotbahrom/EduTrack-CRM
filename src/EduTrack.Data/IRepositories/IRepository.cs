@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Data.IRepositories
 {
-    internal interface IRepository<TEntity> where TEntity : Auditable
+    public interface IRepository<TEntity> where TEntity : Auditable
     {
         Task<bool> DeleteAsync(long id);
         IQueryable<TEntity> SelectAll();
