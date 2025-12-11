@@ -11,7 +11,7 @@ namespace EduTrack.Service.Interfaces
     {
         Task<bool> RemoveAsync(int id);
         Task<StudentResultDto> AddAsync(StudentCreationDto dto);
-        Task<StudentResultDto> UpdateAsync(int id, StudentCreationDto dto);
+        Task<StudentResultDto> UpdateAsync(int id, StudentUpdateDto dto);
         Task<StudentResultDto> GetByIdAsync(int id);
         Task<IEnumerable<StudentResultDto>> GetAllAsync();
     }
