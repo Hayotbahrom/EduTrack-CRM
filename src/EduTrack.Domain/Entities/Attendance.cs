@@ -1,8 +1,9 @@
-﻿namespace EduTrack.Domain.Entities;
+﻿using EduTrack.Domain.Commons;
 
-public class Attendance
+namespace EduTrack.Domain.Entities;
+
+public class Attendance : Auditable
 {
-    public int Id { get; set; }
     public DateTime Date { get; set; }
     public bool IsPresent { get; set; }
     public string Remarks { get; set; }
