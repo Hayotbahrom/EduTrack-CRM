@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Service.Interfaces
 {
-    internal interface IUserService
+    public interface IUserService
     {
     }
 }

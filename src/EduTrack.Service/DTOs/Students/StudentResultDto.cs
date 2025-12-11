@@ -1,12 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduTrack.Service.Interfaces
+
+namespace EduTrack.Service.DTOs.Students
 {
-    public interface IPaymentService
+    public class StudentResultDto
     {
     }
 }

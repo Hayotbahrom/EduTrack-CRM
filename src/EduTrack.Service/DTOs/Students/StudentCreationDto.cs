@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduTrack.Service.Interfaces;
 
-public interface IBranchService
+namespace EduTrack.Service.DTOs.Students
 {
-    Task<bool> RemoveAsync(int id);
-
+    public class StudentCreationDto
+    {
+    }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Service.Interfaces
 {
-    internal interface IGroupService
+    public interface IGroupService
     {
     }
 }
