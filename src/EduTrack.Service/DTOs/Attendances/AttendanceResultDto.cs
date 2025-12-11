@@ -1,3 +1,4 @@
+using EduTrack.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,15 @@ namespace EduTrack.Service.DTOs.Attendances
 {
     public class AttendanceResultDto
     {
+        public int Id { get; set; }
+        public DateTime Date { get; set; }
+        public bool IsPresent { get; set; }
+        public string Remarks { get; set; }
+
+        public int StudentId { get; set; }
+        public Student Student { get; set; }
+
+        public int GroupId { get; set; }
+        public Group Group { get; set; }
     }
 }
