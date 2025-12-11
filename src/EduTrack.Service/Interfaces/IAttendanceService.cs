@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduTrack.Service.Interfaces
+namespace EduTrack.Service.Interfaces;
+
+public interface IAttendanceService
 {
-    internal interface IAttendanceService
-    {
-    }
 }
