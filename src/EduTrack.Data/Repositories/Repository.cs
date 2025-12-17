@@ -18,7 +18,7 @@ namespace EduTrack.Data.Repositories
         public async Task<bool> DeleteAsync(long id)
         {
             var result = await dbSet.FindAsync(id);
-            result.IsDeleted = 1;
+            result.IsDeleted = false;
             await _context.SaveChangesAsync();
             return true;
         }
