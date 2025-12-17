@@ -2,6 +2,7 @@
 using EduTrack.Data.IRepositories;
 using EduTrack.Domain.Commons;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace EduTrack.Data.Repositories
 {
@@ -32,6 +33,12 @@ namespace EduTrack.Data.Repositories
         public IQueryable<TEntity> SelectAll()
         {
             return dbSet;
+        }
+
+        public Task<TEntity> SelectAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            var result = dbSet.Where(predicate).FirstOrDefaultAsync();
+            return result;
         }
 
         public async Task<TEntity> SelectByIdAsync(long id)
