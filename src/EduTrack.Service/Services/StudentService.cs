@@ -1,39 +1,73 @@
+using AutoMapper;
+using EduTrack.Data.IRepositories;
+using EduTrack.Domain.Entities;
 using EduTrack.Service.DTOs.Students;
+using EduTrack.Service.Exceptions;
 using EduTrack.Service.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+namespace EduTrack.Service.Services;
 
-namespace EduTrack.Service.Services
+public class StudentService : IStudentService
 {
-    public class StudentService : IStudentService
+    private readonly IRepository<Student> _repository;
+    private readonly IMapper _mapper;
+
+    public StudentService(IRepository<Student> repository, IMapper mapper)
     {
-        public Task<StudentResultDto> AddAsync(StudentCreationDto dto)
-        {
-            throw new NotImplementedException();
-        }
+        _repository = repository;
+        _mapper = mapper;
+    }
 
-        public Task<IEnumerable<StudentResultDto>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
+    public async Task<StudentResultDto> AddAsync(StudentCreationDto dto)
+    {
+        var student = await _repository.SelectAsync(s => s.FirstName == dto.FirstName && s.PhoneNumber == dto.PhoneNumber);
+        if (student != null)
+            throw new CustomException(404, "Student already exists.");
 
-        public Task<StudentResultDto> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+        var mappedStudent = _mapper.Map<Student>(dto);
+        var createdStudent = await _repository.InsertAsync(mappedStudent);
+        return _mapper.Map<StudentResultDto>(createdStudent);
+    }
 
-        public Task<bool> RemoveAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+    public Task<IEnumerable<StudentResultDto>> GetAllAsync()
+    {
+        var students = _repository.SelectAll();
 
-        public Task<StudentResultDto> UpdateAsync(int id, StudentUpdateDto dto)
-        {
-            throw new NotImplementedException();
-        }
+        var mappedStudents = _mapper.Map<IEnumerable<StudentResultDto>>(students);
+
+        return Task.FromResult(mappedStudents);
+    }
+
+    public async Task<StudentResultDto> GetByIdAsync(int id)
+    {
+        var student = await GetStudentAsync(id);
+       
+        return _mapper.Map<StudentResultDto>(student); 
+    }
+
+    public async Task<bool> RemoveAsync(int id)
+    {
+        var student = await GetStudentAsync(id);
+
+        await _repository.DeleteAsync(id);
+        return true;
+    }
+
+    public async Task<StudentResultDto> UpdateAsync(int id, StudentUpdateDto dto)
+    {
+        var student = await GetStudentAsync(id);
+
+        var mappedStudent = _mapper.Map<Student>(dto);
+
+        var result = await _repository.UpdateAsync(mappedStudent);
+
+        return _mapper.Map<StudentResultDto>(result);
+    }
+
+    private async Task<Student> GetStudentAsync(int id)
+    {
+        var student = await _repository.SelectByIdAsync(id)
+            ?? throw new CustomException(404, "Student not found");
+        return student;
     }
 }
