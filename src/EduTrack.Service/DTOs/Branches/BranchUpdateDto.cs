@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 
 namespace EduTrack.Service.DTOs.Branches
 {
-    public class BranchCreationDto
+    public class BranchUpdateDto
     {
         public string Name { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
+
+        public ICollection<Room> Rooms { get; set; }
     }
 }
