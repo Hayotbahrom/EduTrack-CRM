@@ -1,39 +1,62 @@
+using AutoMapper;
+using EduTrack.Data.IRepositories;
+using EduTrack.Domain.Entities;
 using EduTrack.Service.DTOs.Rooms;
+using EduTrack.Service.Exceptions;
 using EduTrack.Service.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 
-namespace EduTrack.Service.Services
+namespace EduTrack.Service.Services;
+
+public class RoomService(IRepository<Room> repository, IMapper mapper) : IRoomService
 {
-    public class RoomService : IRoomService
+    private readonly IRepository<Room> _repository = repository;
+    private readonly IMapper _mapper = mapper;
+
+    public async Task<RoomResultDto> AddAsync(RoomCreationDto dto)
     {
-        public Task<RoomResultDto> AddAsync(RoomCreationDto dto)
-        {
-            throw new NotImplementedException();
-        }
+        Room mappedRoom = _mapper.Map<Room>(dto);
 
-        public Task<IEnumerable<RoomResultDto>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
+        var createdRoom = await _repository.InsertAsync(mappedRoom);
 
-        public Task<RoomResultDto> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+        return _mapper.Map<RoomResultDto>(createdRoom);
+    }
 
-        public Task<bool> RemoveAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+    public async Task<IEnumerable<RoomResultDto>> GetAllAsync()
+    {
+        var rooms = await _repository.SelectAll().ToListAsync();
+        return _mapper.Map<IEnumerable<RoomResultDto>>(rooms);
+    }
 
-        public Task<RoomResultDto> UpdateAsync(int id, RoomUpdateDto dto)
-        {
-            throw new NotImplementedException();
-        }
+    public async Task<RoomResultDto> GetByIdAsync(int id)
+    {
+        var room = await IsExistAsync(id);
+        return _mapper.Map<RoomResultDto>(room);
+    }
+
+    public async Task<bool> RemoveAsync(int id)
+    {
+        var result = await IsExistAsync(id);
+        return await _repository.DeleteAsync(result.Id);
+    }
+
+    public async Task<RoomResultDto> UpdateAsync(int id, RoomUpdateDto dto)
+    {
+        var room = await IsExistAsync(id);
+
+        var mappedRoom = _mapper.Map(dto, room);
+
+        var updatedRoom = await _repository.UpdateAsync(mappedRoom);
+
+        return _mapper.Map<RoomResultDto>(updatedRoom);
+    }
+
+    private async Task<Room> IsExistAsync(int id)
+    {
+        var room = await _repository.SelectByIdAsync(id)
+            ?? throw new CustomException(404, "Room not found");
+
+        return room;
     }
 }
