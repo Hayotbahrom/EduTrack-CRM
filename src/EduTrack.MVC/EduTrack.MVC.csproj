@@ -11,10 +11,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.22" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\EduTrack.Data\EduTrack.Data.csproj" />
+    <ProjectReference Include="..\EduTrack.Service\EduTrack.Service.csproj" />
   </ItemGroup>
 
 </Project>
