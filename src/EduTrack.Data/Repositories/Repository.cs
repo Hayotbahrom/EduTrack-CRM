@@ -15,7 +15,7 @@ namespace EduTrack.Data.Repositories
             _context = context;
             dbSet = context.Set<TEntity>();
         }
-        public async Task<bool> DeleteAsync(long id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var result = await dbSet.FindAsync(id);
             result.IsDeleted = false;
@@ -41,7 +41,7 @@ namespace EduTrack.Data.Repositories
             return result;
         }
 
-        public async Task<TEntity> SelectByIdAsync(long id)
+        public async Task<TEntity> SelectByIdAsync(int id)
         {
             var result = await dbSet.Where(x => x.Id == id).FirstOrDefaultAsync();
             return result;
