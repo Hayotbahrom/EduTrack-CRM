@@ -1,0 +1,57 @@
+﻿@model EduTrack.Service.DTOs.Branches.BranchUpdateDto
+
+@{
+    ViewData["Title"] = "Edit Branch";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2"><i class="bi bi-pencil-square"></i> Edit Branch</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" name="Id" value="@Model.Id">
+
+                        <!-- Name -->
+                        <div class="mb-3">
+                            <label class="form-label">Branch Name *</label>
+                            <input type="text" class="form-control" name="Name" value="@Model.Name" required>
+                            @if (ViewData.ModelState.ContainsKey("Name") && ViewData.ModelState["Name"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["Name"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <input type="text" class="form-control" name="Address" value="@Model.Address">
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" name="PhoneNumber" value="@Model.PhoneNumber">
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Save
+                            </button>
+                            <a href="@Url.Action("Index", "Branch")" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
