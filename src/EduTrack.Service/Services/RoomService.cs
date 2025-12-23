@@ -46,6 +46,7 @@ public class RoomService(IRepository<Room> repository, IMapper mapper) : IRoomSe
         var room = await IsExistAsync(id);
 
         var mappedRoom = _mapper.Map(dto, room);
+        mappedRoom.UpdatedAt = DateTime.UtcNow;
 
         var updatedRoom = await _repository.UpdateAsync(mappedRoom);
 

@@ -55,7 +55,8 @@ namespace EduTrack.Service.Services
             var group = await IsExistAsync(id);
 
             var updatedGroup = _mapper.Map(dto, group);
-            
+            updatedGroup.UpdatedAt = DateTime.UtcNow;
+
             await _repository.UpdateAsync(updatedGroup);
             
             return _mapper.Map<GroupResultDto>(updatedGroup);

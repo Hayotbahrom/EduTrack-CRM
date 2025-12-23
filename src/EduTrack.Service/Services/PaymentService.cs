@@ -60,7 +60,8 @@ public class PaymentService(IRepository<Payment> repository, IMapper mapper) : I
         var paymentTask = await IsExistAsync(id);
 
         var mappedPayment = _mapper.Map(dto, paymentTask);
-        
+        mappedPayment.UpdatedAt = DateTime.UtcNow;
+
         var updatedPayment = await _repository.UpdateAsync(mappedPayment);
         
         return _mapper.Map<PaymentResultDto>(updatedPayment);

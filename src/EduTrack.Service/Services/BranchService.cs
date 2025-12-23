@@ -46,6 +46,7 @@ public class BranchService(IRepository<Branch> repository, IMapper mapper) : IBr
     {
         var branch = await IsValidAsync(id);
         var mappedBranch = _mapper.Map(dto, branch);
+        mappedBranch.UpdatedAt = DateTime.UtcNow;
         var updatedBranch = await _repository.UpdateAsync(mappedBranch);
         return _mapper.Map<BranchResultDto>(updatedBranch);
     }

@@ -59,6 +59,7 @@ public class StudentService : IStudentService
         var student = await GetStudentAsync(id);
 
         var mappedStudent = _mapper.Map(dto, student);
+        mappedStudent.UpdatedAt = DateTime.UtcNow;
 
         var result = await _repository.UpdateAsync(mappedStudent);
 
