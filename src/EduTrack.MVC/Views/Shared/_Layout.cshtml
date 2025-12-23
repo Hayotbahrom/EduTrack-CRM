@@ -4,57 +4,147 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - EduTrack</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/EduTrack.MVC.styles.css" asp-append-version="true" />
+
+    <style>
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            min-height: 100vh;
+            background-color: #212529;
+        }
+
+            .sidebar .nav-link {
+                color: #adb5bd;
+                padding: 12px 20px;
+                font-weight: 500;
+            }
+
+                .sidebar .nav-link:hover,
+                .sidebar .nav-link.active {
+                    background-color: #343a40;
+                    color: #fff;
+                }
+
+            .sidebar .brand {
+                font-size: 1.3rem;
+                font-weight: 700;
+                color: #fff;
+                padding: 20px;
+                border-bottom: 1px solid #343a40;
+            }
+
+        .content-wrapper {
+            flex-grow: 1;
+            background-color: #f8f9fa;
+        }
+
+        .topbar {
+            height: 60px;
+            background-color: #fff;
+            border-bottom: 1px solid #dee2e6;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-book-fill"></i> EduTrack
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="bi bi-speedometer2"></i> Home
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Student" asp-action="Index">
-                                <i class="bi bi-people-fill"></i> Students
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                Privacy
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+
+    <div class="d-flex">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="bi bi-book-fill me-2"></i> EduTrack
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - EduTrack - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+            <ul class="nav flex-column mt-3">
+                <li class="nav-item">
+                    <a class="nav-link active" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Branch" asp-action="Index">
+                        <i class="bi bi-building me-2"></i> Branches
+                    </a>
+                </li>
+                <li>
+                    <li class="nav-item">
+                    <a class="nav-link" asp-controller="Room" asp-action="Index">
+                        <i class="bi bi-door-closed-fill me-2"></i> Rooms
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Student" asp-action="Index">
+                        <i class="bi bi-people-fill me-2"></i> Students
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Instructor" asp-action="Index">
+                        <i class="bi bi-person-badge-fill me-2"></i> Instructors
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-journal-text me-2"></i> Courses
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-bar-chart-fill me-2"></i> Reports
+                    </a>
+                </li>
+
+                <li class="nav-item mt-3">
+                    <hr class="text-secondary mx-3">
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Privacy">
+                        <i class="bi bi-shield-lock-fill me-2"></i> Privacy
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- CONTENT -->
+        <div class="content-wrapper d-flex flex-column">
+
+            <!-- TOPBAR -->
+            <header class="topbar d-flex align-items-center justify-content-between px-4">
+                <h6 class="mb-0 text-muted">@ViewData["Title"]</h6>
+
+                <div>
+                    <i class="bi bi-bell me-3"></i>
+                    <i class="bi bi-person-circle"></i>
+                </div>
+            </header>
+
+            <!-- MAIN CONTENT -->
+            <main class="p-4">
+                @RenderBody()
+            </main>
+
+            <!-- FOOTER -->
+            <footer class="text-center text-muted py-3 border-top bg-white">
+                &copy; 2025 - EduTrack
+            </footer>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    </div>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
