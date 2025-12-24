@@ -57,8 +57,12 @@ public class BranchService(IRepository<Branch> repository, IMapper mapper) : IBr
 
     private async Task<Branch> IsValidAsync(int id)
     {
-        var branch = await _repository.SelectByIdAsync(id)
+        var branch = await _repository.SelectAll()
+            .Where(x => x.IsDeleted == false && x.Id == id)
+            .Include(b => b.Rooms)
+            .FirstOrDefaultAsync()
             ?? throw new CustomException(404, "Branch not found");
+
         return branch;
     }
     private async Task<Branch> IsExistBranchAsync(BranchCreationDto dto)
