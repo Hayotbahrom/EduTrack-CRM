@@ -24,7 +24,9 @@ public class AttendanceService(IRepository<Attendance> repository, IMapper mappe
 
     public async Task<IEnumerable<AttendanceResultDto>> GetAllAsync()
     {
-        var attendances = await _repository.SelectAll().ToListAsync();
+        var attendances = await _repository.SelectAll()
+            .Where(r => r.IsDeleted == false)
+            .ToListAsync();
         return _mapper.Map<IEnumerable<AttendanceResultDto>>(attendances);
     }
 

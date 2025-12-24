@@ -25,7 +25,13 @@ public class RoomService(IRepository<Room> repository, IMapper mapper) : IRoomSe
 
     public async Task<IEnumerable<RoomResultDto>> GetAllAsync()
     {
-        var rooms = await _repository.SelectAll().ToListAsync();
+        var rooms = await _repository
+            .SelectAll()
+            .Include(r => r.Branch)
+            .Include(r => r.Groups)
+            .Where(r => r.IsDeleted == false)
+            .ToListAsync();
+
         return _mapper.Map<IEnumerable<RoomResultDto>>(rooms);
     }
 
@@ -55,7 +61,11 @@ public class RoomService(IRepository<Room> repository, IMapper mapper) : IRoomSe
 
     private async Task<Room> IsExistAsync(int id)
     {
-        var room = await _repository.SelectByIdAsync(id)
+        var room = await _repository.SelectAll()
+            .Where(r => r.IsDeleted == false && r.Id == id)
+            .Include(r => r.Branch)
+            .Include(r => r.Groups)
+            .FirstOrDefaultAsync()
             ?? throw new CustomException(404, "Room not found");
 
         return room;

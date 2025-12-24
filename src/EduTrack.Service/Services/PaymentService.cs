@@ -38,7 +38,7 @@ public class PaymentService(IRepository<Payment> repository, IMapper mapper) : I
 
     public async Task<IEnumerable<PaymentResultDto>> GetAllAsync()
     {
-        var payments = await _repository.SelectAll().ToListAsync();
+        var payments = await _repository.SelectAll().Where(r => r.IsDeleted == false).ToListAsync();
 
         return _mapper.Map<IEnumerable<PaymentResultDto>>(payments);
     }

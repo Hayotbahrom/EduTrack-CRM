@@ -27,7 +27,11 @@ public class BranchService(IRepository<Branch> repository, IMapper mapper) : IBr
 
     public async Task<IEnumerable<BranchResultDto>> GetAllAsync()
     {
-        return _mapper.Map<IEnumerable<BranchResultDto>>(await _repository.SelectAll().ToListAsync());
+        return _mapper.Map<IEnumerable<BranchResultDto>>(await _repository
+            .SelectAll()
+            .Include(b => b.Rooms)
+            .Where(r => r.IsDeleted == false)
+            .ToListAsync());
     }
 
     public async Task<BranchResultDto> GetByIdAsync(int id)

@@ -41,7 +41,7 @@ namespace EduTrack.Service.Services
 
         public async Task<IEnumerable<UserResultDto>> GetAllAsync()
         {
-            var users = await _repository.SelectAll().ToListAsync();
+            var users = await _repository.SelectAll().Where(r => r.IsDeleted == false).ToListAsync();
             return _mapper.Map<IEnumerable<UserResultDto>>(users);
         }
 

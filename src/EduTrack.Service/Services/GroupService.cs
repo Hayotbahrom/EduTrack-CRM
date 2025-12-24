@@ -34,6 +34,7 @@ namespace EduTrack.Service.Services
         {
             var groups = await _repository
                 .SelectAll()
+                .Where(r => r.IsDeleted == false)
                 .ToListAsync();
             return _mapper.Map<IEnumerable<GroupResultDto>>(groups);
         }
