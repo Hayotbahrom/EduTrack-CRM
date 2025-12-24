@@ -1,0 +1,73 @@
+﻿@model EduTrack.Service.DTOs.Branches.BranchResultDto
+
+@{
+    ViewData["Title"] = "Branch Details";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2"><i class="bi bi-building"></i> @Model.Name</h1>
+        </div>
+        <div class="col-auto">
+            <a href="@Url.Action("Edit", "Branch", new { id = Model.Id })" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a href="@Url.Action("Delete", "Branch", new { id = Model.Id })" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Delete
+            </a>
+            <a href="@Url.Action("Index", "Branch")" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Branch Information
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted">Name</label>
+                        <p><strong>@Model.Name</strong></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Address</label>
+                        <p>@(string.IsNullOrEmpty(Model.Address) ? "-" : Model.Address)</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Phone</label>
+                        <p>@(string.IsNullOrEmpty(Model.PhoneNumber) ? "-" : Model.PhoneNumber)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    Information
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted">Branch ID</label>
+                        <p>@Model.Id</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Created</label>
+                        <p>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                    @if (Model.UpdatedAt.HasValue)
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted">Updated</label>
+                            <p>@Model.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

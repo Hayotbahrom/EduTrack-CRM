@@ -4,6 +4,7 @@ using EduTrack.Domain.Entities;
 using EduTrack.Service.DTOs.Students;
 using EduTrack.Service.Exceptions;
 using EduTrack.Service.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EduTrack.Service.Services;
 
@@ -29,13 +30,13 @@ public class StudentService : IStudentService
         return _mapper.Map<StudentResultDto>(createdStudent);
     }
 
-    public Task<IEnumerable<StudentResultDto>> GetAllAsync()
+    public async Task<IEnumerable<StudentResultDto>> GetAllAsync()
     {
-        var students = _repository.SelectAll();
+        var students = await _repository.SelectAll().Where(s => s.IsDeleted == false).ToListAsync();
 
         var mappedStudents = _mapper.Map<IEnumerable<StudentResultDto>>(students);
 
-        return Task.FromResult(mappedStudents);
+        return mappedStudents;
     }
 
     public async Task<StudentResultDto> GetByIdAsync(int id)
@@ -57,7 +58,8 @@ public class StudentService : IStudentService
     {
         var student = await GetStudentAsync(id);
 
-        var mappedStudent = _mapper.Map<Student>(dto);
+        var mappedStudent = _mapper.Map(dto, student);
+        mappedStudent.UpdatedAt = DateTime.UtcNow;
 
         var result = await _repository.UpdateAsync(mappedStudent);
 

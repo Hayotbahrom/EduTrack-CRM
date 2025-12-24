@@ -23,7 +23,7 @@ public class MappingProfile : Profile
         // Student Mappings
         CreateMap<Student, StudentCreationDto>().ReverseMap();
         CreateMap<Student, StudentResultDto>().ReverseMap();
-        CreateMap<Payment, StudentUpdateDto>().ReverseMap();
+        CreateMap<Student, StudentUpdateDto>().ReverseMap();
 
         // Payment Mappings
         CreateMap<Payment, PaymentUpdateDto>().ReverseMap();

@@ -1,0 +1,91 @@
+﻿@model EduTrack.Service.DTOs.Students.StudentResultDto
+
+@{
+    ViewData["Title"] = "Student Details";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2"><i class="bi bi-person-badge-fill"></i> @Model.FirstName @Model.LastName</h1>
+        </div>
+        <div class="col-auto">
+            <a href="@Url.Action("Edit", "Student", new { id = Model.Id })" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a href="@Url.Action("Delete", "Student", new { id = Model.Id })" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Delete
+            </a>
+            <a href="@Url.Action("Index", "Student")" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Personal Information
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted">First Name</label>
+                        <p>@Model.FirstName</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Last Name</label>
+                        <p>@Model.LastName</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Phone</label>
+                        <p>@Model.PhoneNumber</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Parent Phone</label>
+                        <p>@Model.ParentPhoneNumber</p>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Address))
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted">Address</label>
+                            <p>@Model.Address</p>
+                        </div>
+                    }
+                    @if (Model.BirthDate != DateTime.MinValue)
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted">Birth Date</label>
+                            <p>@Model.BirthDate.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    Information
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted">Student ID</label>
+                        <p>@Model.Id</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Created</label>
+                        <p>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                    @if (Model.UpdatedAt.HasValue)
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted">Updated</label>
+                            <p>@Model.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

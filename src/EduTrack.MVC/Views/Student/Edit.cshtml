@@ -1,0 +1,87 @@
+﻿@model EduTrack.Service.DTOs.Students.StudentUpdateDto
+
+@{
+    ViewData["Title"] = "Edit Student";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2"><i class="bi bi-pencil-square"></i> Edit Student</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" name="Id" value="@Model.Id">
+
+                        <!-- First Name -->
+                        <div class="mb-3">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" class="form-control" name="FirstName" value="@Model.FirstName" required>
+                            @if (ViewData.ModelState.ContainsKey("FirstName") && ViewData.ModelState["FirstName"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["FirstName"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="mb-3">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" class="form-control" name="LastName" value="@Model.LastName" required>
+                            @if (ViewData.ModelState.ContainsKey("LastName") && ViewData.ModelState["LastName"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["LastName"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="mb-3">
+                            <label class="form-label">Student Phone *</label>
+                            <input type="tel" class="form-control" name="PhoneNumber" value="@Model.PhoneNumber" required>
+                            @if (ViewData.ModelState.ContainsKey("PhoneNumber") && ViewData.ModelState["PhoneNumber"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["PhoneNumber"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Parent Phone -->
+                        <div class="mb-3">
+                            <label class="form-label">Parent Phone *</label>
+                            <input type="tel" class="form-control" name="ParentPhoneNumber" value="@Model.ParentPhoneNumber" required>
+                            @if (ViewData.ModelState.ContainsKey("ParentPhoneNumber") && ViewData.ModelState["ParentPhoneNumber"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["ParentPhoneNumber"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Birth Date -->
+                        <div class="mb-3">
+                            <label class="form-label">Birth Date</label>
+                            <input type="date" class="form-control" name="BirthDate" value="@(Model.BirthDate != DateTime.MinValue ? Model.BirthDate.ToString("yyyy-MM-dd") : "")">
+                        </div>
+
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <input type="text" class="form-control" name="Address" value="@Model.Address">
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Save
+                            </button>
+                            <a href="@Url.Action("Index", "Student")" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

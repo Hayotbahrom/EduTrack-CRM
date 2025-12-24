@@ -1,39 +1,68 @@
+using AutoMapper;
+using EduTrack.Data.IRepositories;
+using EduTrack.Domain.Entities;
 using EduTrack.Service.DTOs.Attendances;
+using EduTrack.Service.Exceptions;
 using EduTrack.Service.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 
-namespace EduTrack.Service.Services
+namespace EduTrack.Service.Services;
+
+public class AttendanceService(IRepository<Attendance> repository, IMapper mapper) : IAttendanceService
 {
-    public class AttendanceService : IAttendanceService
+    private readonly IRepository<Attendance> _repository = repository;
+    private readonly IMapper _mapper = mapper;
+
+    public async Task<AttendanceResultDto> AddAsync(AttendanceCreationDto dto)
     {
-        public Task<AttendanceResultDto> AddAsync(AttendanceCreationDto dto)
-        {
-            throw new NotImplementedException();
-        }
+        var mappedAttendance = _mapper.Map<Attendance>(dto);
+        var createdAttendance = await _repository.InsertAsync(mappedAttendance);
+        var resultDto = _mapper.Map<AttendanceResultDto>(createdAttendance);
+        return resultDto;
+    }
 
-        public Task<IEnumerable<AttendanceResultDto>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
+    public async Task<IEnumerable<AttendanceResultDto>> GetAllAsync()
+    {
+        var attendances = await _repository.SelectAll()
+            .Where(r => r.IsDeleted == false)
+            .ToListAsync();
+        return _mapper.Map<IEnumerable<AttendanceResultDto>>(attendances);
+    }
 
-        public Task<AttendanceResultDto> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+    public async Task<AttendanceResultDto> GetByIdAsync(int id)
+    {
+        var attendance = await _repository.SelectByIdAsync(id)
+            ?? throw new CustomException(404, "Attendance not found");
 
-        public Task<bool> RemoveAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+        return _mapper.Map<AttendanceResultDto>(attendance);
+    }
 
-        public Task<AttendanceResultDto> UpdateAsync(int id, AttendanceUpdateDto dto)
+    public Task<bool> RemoveAsync(int id)
+    {
+        var attendance = _repository.SelectByIdAsync(id)
+            ?? throw new CustomException(404, "Attendance not found");
+
+        return _repository.DeleteAsync(id);
+    }
+
+    public async Task<AttendanceResultDto> UpdateAsync(int id, AttendanceUpdateDto dto)
+    {
+        var attendance = _repository.SelectByIdAsync(id)
+            ?? throw new CustomException(404, "Attendance not found");
+        var mappedAttendance = new Attendance
         {
-            throw new NotImplementedException();
-        }
+            Id = id,
+            Date = dto.Date,
+            IsPresent = dto.IsPresent,
+            Remarks = dto.Remarks,
+            StudentId = dto.StudentId,
+            Student = dto.Student,
+            GroupId = dto.GroupId,
+            Group = dto.Group,
+            UpdatedAt = DateTime.UtcNow,
+        };
+        var updatedAttendance = await _repository.UpdateAsync(mappedAttendance);
+        return _mapper.Map<AttendanceResultDto>(updatedAttendance);
     }
 }

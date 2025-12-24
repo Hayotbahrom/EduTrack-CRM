@@ -1,0 +1,89 @@
+﻿@model EduTrack.Service.DTOs.Rooms.RoomResultDto
+
+@{
+    ViewData["Title"] = "Room Details";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2"><i class="bi bi-door-closed"></i> @Model.Name</h1>
+        </div>
+        <div class="col-auto">
+            <a href="@Url.Action("Edit", "Room", new { id = Model.Id })" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a href="@Url.Action("Delete", "Room", new { id = Model.Id })" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Delete
+            </a>
+            <a href="@Url.Action("Index", "Room")" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Room Information
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted">Name</label>
+                        <p><strong>@Model.Name</strong></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Branch</label>
+                        <p>
+                            @if (Model.Branch != null)
+                            {
+                                <strong>@Model.Branch.Name</strong>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Capacity</label>
+                        <p><span class="badge bg-info">@Model.Capacity Students</span></p>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted">Description</label>
+                            <p>@Model.Description</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    Information
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted">Room ID</label>
+                        <p>@Model.Id</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Created</label>
+                        <p>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                    @if (Model.UpdatedAt.HasValue)
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted">Updated</label>
+                            <p>@Model.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

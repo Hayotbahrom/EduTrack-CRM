@@ -38,7 +38,7 @@ public class PaymentService(IRepository<Payment> repository, IMapper mapper) : I
 
     public async Task<IEnumerable<PaymentResultDto>> GetAllAsync()
     {
-        var payments = await _repository.SelectAll().ToListAsync();
+        var payments = await _repository.SelectAll().Where(r => r.IsDeleted == false).ToListAsync();
 
         return _mapper.Map<IEnumerable<PaymentResultDto>>(payments);
     }
@@ -60,7 +60,8 @@ public class PaymentService(IRepository<Payment> repository, IMapper mapper) : I
         var paymentTask = await IsExistAsync(id);
 
         var mappedPayment = _mapper.Map(dto, paymentTask);
-        
+        mappedPayment.UpdatedAt = DateTime.UtcNow;
+
         var updatedPayment = await _repository.UpdateAsync(mappedPayment);
         
         return _mapper.Map<PaymentResultDto>(updatedPayment);
