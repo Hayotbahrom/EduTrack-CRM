@@ -19,8 +19,11 @@ namespace EduTrack.Domain.Entities
         public int RoomId { get; set; }
         public Room Room { get; set; }
 
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public int BranchId { get; set; }
+        public Branch Branch { get; set; }
+
+        public int TeacherId { get; set; }
+        public User Teacher { get; set; }
 
         public ICollection<StudentGroup> StudentGroups { get; set; }
         public ICollection<Attendance> Attendances { get; set;  }

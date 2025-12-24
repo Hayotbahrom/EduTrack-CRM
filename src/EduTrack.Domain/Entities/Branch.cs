@@ -9,5 +9,6 @@ namespace EduTrack.Domain.Entities
         public string PhoneNumber { get; set; }
 
         public ICollection<Room> Rooms { get; set; }
+        public ICollection<Group> Groups { get; set; }
     }
 }

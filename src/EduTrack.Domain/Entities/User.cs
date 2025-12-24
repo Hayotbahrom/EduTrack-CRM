@@ -11,5 +11,7 @@ namespace EduTrack.Domain.Entities
         public string PhoneNumber { get; set; }
         public string PasswordHash { get; set; }
         public UserRole Role { get; set; }
+
+        public ICollection<Group> Groups { get; set; }
     }
 }
