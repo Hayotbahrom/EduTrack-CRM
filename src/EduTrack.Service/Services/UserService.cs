@@ -1,6 +1,7 @@
 using AutoMapper;
 using EduTrack.Data.IRepositories;
 using EduTrack.Domain.Entities;
+using EduTrack.Domain.Enums;
 using EduTrack.Service.DTOs.Users;
 using EduTrack.Service.Exceptions;
 using EduTrack.Service.Interfaces;
@@ -37,6 +38,15 @@ namespace EduTrack.Service.Services
 
             var result = await _repository.InsertAsync(mappedUser);
             return _mapper.Map<UserResultDto>(result);
+        }
+
+        public dynamic GetUserRoles()
+        {
+            var roles = Enum.GetValues(typeof(EduTrack.Domain.Enums.UserRole))
+                    .Cast<EduTrack.Domain.Enums.UserRole>()
+                    .Select(r => new { Value = (int)r, Text = r.ToString() })
+                    .ToList();
+            return roles;
         }
 
         public async Task<IEnumerable<UserResultDto>> GetAllAsync()
