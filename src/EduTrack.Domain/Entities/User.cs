@@ -1,4 +1,5 @@
 ﻿using EduTrack.Domain.Commons;
+using EduTrack.Domain.Enums;
 
 namespace EduTrack.Domain.Entities
 {
@@ -9,5 +10,6 @@ namespace EduTrack.Domain.Entities
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string PasswordHash { get; set; }
+        public UserRole Role { get; set; }
     }
 }
