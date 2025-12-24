@@ -1,0 +1,200 @@
+﻿@model EduTrack.Service.DTOs.Groups.GroupResultDto
+
+@{
+    ViewData["Title"] = "Guruh - " + Model.Name;
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2"><i class="bi bi-book-half"></i> @Model.Name</h1>
+        </div>
+        <div class="col-auto">
+            <a href="@Url.Action("Edit", "Group", new { id = Model.Id })" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Tahrirlash
+            </a>
+            <a href="@Url.Action("Delete", "Group", new { id = Model.Id })" class="btn btn-danger">
+                <i class="bi bi-trash"></i> O'chirish
+            </a>
+            <a href="@Url.Action("Index", "Group")" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Orqaga
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <!-- Asosiy Ma'lumotlar -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <strong><i class="bi bi-info-circle"></i> Asosiy Ma'lumotlar</strong>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted">Nomi</label>
+                        <p><strong>@Model.Name</strong></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Fani</label>
+                        <p><strong>@Model.Subject</strong></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Tavsif</label>
+                        <p>@(string.IsNullOrEmpty(Model.Description) ? "-" : Model.Description)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vaqt Ma'lumotlari -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <strong><i class="bi bi-calendar-event"></i> Vaqt Ma'lumotlari</strong>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted">Boshlash Sanasi</label>
+                        <p>@Model.StartDate.ToString("dd.MM.yyyy HH:mm")</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Tugatish Sanasi</label>
+                        <p>@Model.EndDate.ToString("dd.MM.yyyy HH:mm")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <!-- O'qituvchi -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <strong><i class="bi bi-person-badge"></i> O'qituvchi</strong>
+                </div>
+                <div class="card-body">
+                    @if (Model.Teacher != null)
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted">Ismi</label>
+                            <p><strong>@Model.Teacher.FirstName @Model.Teacher.LastName</strong></p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted">Email</label>
+                            <p>@Model.Teacher.Email</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted">Telefon</label>
+                            <p>@Model.Teacher.PhoneNumber</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-danger">O'qituvchi tayinlanmagan</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Xona -->
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <strong><i class="bi bi-door-closed"></i> Dars Xonasi</strong>
+                </div>
+                <div class="card-body">
+                    @if (Model.Room != null)
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted">Nomi</label>
+                            <p><strong>@Model.Room.Name</strong></p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted">Sig'imi</label>
+                            <p><span class="badge bg-info">@Model.Room.Capacity o'quvchi</span></p>
+                        </div>
+                        @if (!string.IsNullOrEmpty(Model.Room.Description))
+                        {
+                            <div class="mb-3">
+                                <label class="text-muted">Tavsif</label>
+                                <p>@Model.Room.Description</p>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-danger">Xona tayinlanmagan</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Filial -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <strong><i class="bi bi-building"></i> Filial</strong>
+                </div>
+                <div class="card-body">
+                    @if (Model.Branch != null)
+                    {
+                        <div class="mb-3">
+                            <label class="text-muted">Nomi</label>
+                            <p><strong>@Model.Branch.Name</strong></p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted">Manzil</label>
+                            <p>@Model.Branch.Address</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted">Telefon</label>
+                            <p>@Model.Branch.PhoneNumber</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-danger">Filial ma'lumoti topilmadi</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Oylik To'lov -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <strong><i class="bi bi-cash-coin"></i> Moliyaviy Ma'lumotlar</strong>
+                </div>
+                <div class="card-body">
+                    <div class="mb-0">
+                        <label class="text-muted">Oylik To'lov</label>
+                        <h4 class="text-success">@Model.MonthlyFee.ToString("N0") UZS</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audit Ma'lumotlari -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light text-dark">
+                    <strong><i class="bi bi-clock-history"></i> Audit Ma'lumotlari</strong>
+                </div>
+                <div class="card-body small">
+                    <div class="mb-3">
+                        <label class="text-muted">ID</label>
+                        <p>@Model.Id</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted">Yaratilgan</label>
+                        <p>@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</p>
+                    </div>
+                    @if (Model.UpdatedAt.HasValue)
+                    {
+                        <div class="mb-0">
+                            <label class="text-muted">O'zgartirilgan</label>
+                            <p>@Model.UpdatedAt.Value.ToString("dd.MM.yyyy HH:mm")</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

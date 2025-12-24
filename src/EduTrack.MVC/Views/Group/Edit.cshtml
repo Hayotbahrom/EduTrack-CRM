@@ -1,0 +1,188 @@
+﻿@model EduTrack.Service.DTOs.Groups.GroupResultDto
+
+@{
+    ViewData["Title"] = "Guruhni Tahrirlash";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2"><i class="bi bi-pencil-square"></i> Guruhni Tahrirlash</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-circle"></i> <strong>Quyidagi xatolarni tuzating:</strong>
+                            <ul class="mb-0 mt-2">
+                                @foreach (var modelState in ViewData.ModelState.Values)
+                                {
+                                    @foreach (var error in modelState.Errors)
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                }
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    <form method="post">
+                        <input type="hidden" name="Id" value="@Model.Id">
+
+                        <!-- Filial -->
+                        <div class="mb-3">
+                            <label class="form-label">Filial *</label>
+                            <select class="form-select" id="branchSelect" name="BranchId" required>
+                                <option value="">-- Filial tanlang --</option>
+                                @if (ViewBag.Branches != null)
+                                {
+                                    @foreach (var branch in ViewBag.Branches)
+                                    {
+                                        if (branch.Id == Model.BranchId)
+                                        {
+                                            <option value="@branch.Id" selected>@branch.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@branch.Id">@branch.Name</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Xona -->
+                        <div class="mb-3">
+                            <label class="form-label">Xona *</label>
+                            <select class="form-select" id="roomSelect" name="RoomId" required>
+                                <option value="">-- Xona tanlang --</option>
+                                @if (ViewBag.Rooms != null)
+                                {
+                                    @foreach (var room in ViewBag.Rooms)
+                                    {
+                                        if (room.Id == Model.RoomId)
+                                        {
+                                            <option value="@room.Id" selected>@room.Name (sig'imi: @room.Capacity)</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@room.Id">@room.Name (sig'imi: @room.Capacity)</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <!-- O'qituvchi -->
+                        <div class="mb-3">
+                            <label class="form-label">O'qituvchi *</label>
+                            <select class="form-select" name="TeacherId" required>
+                                <option value="">-- O'qituvchi tanlang --</option>
+                                @if (ViewBag.Teachers != null)
+                                {
+                                    @foreach (var teacher in ViewBag.Teachers)
+                                    {
+                                        if (teacher.Id == Model.TeacherId)
+                                        {
+                                            <option value="@teacher.Id" selected>@teacher.FirstName @teacher.LastName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@teacher.Id">@teacher.FirstName @teacher.LastName</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Guruh Nomi -->
+                        <div class="mb-3">
+                            <label class="form-label">Guruh Nomi *</label>
+                            <input type="text" class="form-control" name="Name" value="@Model.Name" required>
+                        </div>
+
+                        <!-- Fani -->
+                        <div class="mb-3">
+                            <label class="form-label">Fani *</label>
+                            <input type="text" class="form-control" name="Subject" value="@Model.Subject" required>
+                        </div>
+
+                        <!-- Tavsif -->
+                        <div class="mb-3">
+                            <label class="form-label">Tavsif</label>
+                            <textarea class="form-control" name="Description" rows="2">@Model.Description</textarea>
+                        </div>
+
+                        <!-- Oylik To'lov -->
+                        <div class="mb-3">
+                            <label class="form-label">Oylik To'lov (UZS) *</label>
+                            <input type="number" class="form-control" name="MonthlyFee" value="@Model.MonthlyFee" step="0.01" required>
+                        </div>
+
+                        <!-- Boshlash Sanasi -->
+                        <div class="mb-3">
+                            <label class="form-label">Boshlash Sanasi *</label>
+                            <input type="datetime-local" class="form-control" name="StartDate"
+                                   value="@Model.StartDate.ToString("yyyy-MM-ddTHH:mm")" required>
+                        </div>
+
+                        <!-- Tugatish Sanasi -->
+                        <div class="mb-3">
+                            <label class="form-label">Tugatish Sanasi *</label>
+                            <input type="datetime-local" class="form-control" name="EndDate"
+                                   value="@Model.EndDate.ToString("yyyy-MM-ddTHH:mm")" required>
+                        </div>
+
+                        <!-- Tugmalar -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Saqlash
+                            </button>
+                            <a href="@Url.Action("Index", "Group")" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Bekor qilish
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Branch → Room dependent dropdown
+        document.getElementById('branchSelect').addEventListener('change', async function() {
+            const branchId = this.value;
+            const roomSelect = document.getElementById('roomSelect');
+
+            if (!branchId) {
+                roomSelect.innerHTML = '<option value="">-- Avval filial tanlang --</option>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/Group/GetRoomsByBranch?branchId=${branchId}`);
+                const rooms = await response.json();
+
+                roomSelect.innerHTML = '<option value="">-- Xona tanlang --</option>';
+
+                if (rooms && !rooms.error) {
+                    rooms.forEach(room => {
+                        const option = document.createElement('option');
+                        option.value = room.id;
+                        option.textContent = `${room.name} (sig'imi: ${room.capacity})`;
+                        roomSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Xatolik:', error);
+            }
+        });
+    </script>
+}

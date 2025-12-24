@@ -1,0 +1,189 @@
+﻿@model EduTrack.Service.DTOs.Groups.GroupCreationDto
+
+@{
+    ViewData["Title"] = "Yangi Guruh";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2"><i class="bi bi-plus-circle"></i> Yangi Guruh</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-circle"></i> <strong>Quyidagi xatolarni tuzating:</strong>
+                            <ul class="mb-0 mt-2">
+                                @foreach (var modelState in ViewData.ModelState.Values)
+                                {
+                                    @foreach (var error in modelState.Errors)
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                }
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    <form method="post" id="groupForm">
+                        <!-- Filial -->
+                        <div class="mb-3">
+                            <label class="form-label">Filial *</label>
+                            <select class="form-select" id="branchSelect" name="BranchId" required>
+                                <option value="">-- Filial tanlang --</option>
+                                @if (ViewBag.Branches != null)
+                                {
+                                    @foreach (var branch in ViewBag.Branches)
+                                    {
+                                        <option value="@branch.Id">@branch.Name</option>
+                                    }
+                                }
+                            </select>
+                            @if (ViewData.ModelState.ContainsKey("BranchId") && ViewData.ModelState["BranchId"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["BranchId"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Xona -->
+                        <div class="mb-3">
+                            <label class="form-label">Xona *</label>
+                            <select class="form-select" id="roomSelect" name="RoomId" required>
+                                <option value="">-- Avval filial tanlang --</option>
+                            </select>
+                            @if (ViewData.ModelState.ContainsKey("RoomId") && ViewData.ModelState["RoomId"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["RoomId"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- O'qituvchi -->
+                        <div class="mb-3">
+                            <label class="form-label">O'qituvchi *</label>
+                            <select class="form-select" name="TeacherId" required>
+                                <option value="">-- O'qituvchi tanlang --</option>
+                                @if (ViewBag.Teachers != null)
+                                {
+                                    @foreach (var teacher in ViewBag.Teachers)
+                                    {
+                                        <option value="@teacher.Id">@teacher.FirstName @teacher.LastName</option>
+                                    }
+                                }
+                            </select>
+                            @if (ViewData.ModelState.ContainsKey("TeacherId") && ViewData.ModelState["TeacherId"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["TeacherId"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Guruh Nomi -->
+                        <div class="mb-3">
+                            <label class="form-label">Guruh Nomi *</label>
+                            <input type="text" class="form-control" name="Name" value="@Model?.Name" placeholder="masalan: 10-A sinf" required>
+                            @if (ViewData.ModelState.ContainsKey("Name") && ViewData.ModelState["Name"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["Name"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Fani -->
+                        <div class="mb-3">
+                            <label class="form-label">Fani *</label>
+                            <input type="text" class="form-control" name="Subject" value="@Model?.Subject" placeholder="masalan: Matematika" required>
+                            @if (ViewData.ModelState.ContainsKey("Subject") && ViewData.ModelState["Subject"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["Subject"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Tavsif -->
+                        <div class="mb-3">
+                            <label class="form-label">Tavsif</label>
+                            <textarea class="form-control" name="Description" rows="2" placeholder="Guruh haqida ma'lumot yozing...">@Model?.Description</textarea>
+                        </div>
+
+                        <!-- Oylik To'lov -->
+                        <div class="mb-3">
+                            <label class="form-label">Oylik To'lov (UZS) *</label>
+                            <input type="number" class="form-control" name="MonthlyFee" value="@Model?.MonthlyFee" step="0.01" placeholder="0.00" required>
+                            @if (ViewData.ModelState.ContainsKey("MonthlyFee") && ViewData.ModelState["MonthlyFee"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["MonthlyFee"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Boshlash Sanasi -->
+                        <div class="mb-3">
+                            <label class="form-label">Boshlash Sanasi *</label>
+                            <input type="datetime-local" class="form-control" name="StartDate" required>
+                            @if (ViewData.ModelState.ContainsKey("StartDate") && ViewData.ModelState["StartDate"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["StartDate"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Tugatish Sanasi -->
+                        <div class="mb-3">
+                            <label class="form-label">Tugatish Sanasi *</label>
+                            <input type="datetime-local" class="form-control" name="EndDate" required>
+                            @if (ViewData.ModelState.ContainsKey("EndDate") && ViewData.ModelState["EndDate"].Errors.Count > 0)
+                            {
+                                <small class="text-danger d-block mt-1">@ViewData.ModelState["EndDate"].Errors[0].ErrorMessage</small>
+                            }
+                        </div>
+
+                        <!-- Tugmalar -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Saqlash
+                            </button>
+                            <a href="@Url.Action("Index", "Group")" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Bekor qilish
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Branch → Room dependent dropdown
+        document.getElementById('branchSelect').addEventListener('change', async function() {
+            const branchId = this.value;
+            const roomSelect = document.getElementById('roomSelect');
+
+            if (!branchId) {
+                roomSelect.innerHTML = '<option value="">-- Avval filial tanlang --</option>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/Group/GetRoomsByBranch?branchId=${branchId}`);
+                const rooms = await response.json();
+
+                roomSelect.innerHTML = '<option value="">-- Xona tanlang --</option>';
+
+                if (rooms && !rooms.error) {
+                    rooms.forEach(room => {
+                        const option = document.createElement('option');
+                        option.value = room.id;
+                        option.textContent = `${room.name} (sig'imi: ${room.capacity})`;
+                        roomSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Xatolik:', error);
+                roomSelect.innerHTML += '<option disabled>Xonalarni yuklashda xatolik</option>';
+            }
+        });
+    </script>
+}

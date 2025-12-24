@@ -1,0 +1,108 @@
+﻿@model IEnumerable<EduTrack.Service.DTOs.Groups.GroupResultDto>
+
+@{
+    ViewData["Title"] = "Guruhlar";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2"><i class="bi bi-book-half"></i> Guruhlar</h1>
+        </div>
+        <div class="col-auto">
+            <a href="@Url.Action("Create", "Group")" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Yangi Guruh Qo'shish
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="card">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nomi</th>
+                        <th>Fani</th>
+                        <th>O'qituvchi</th>
+                        <th>Xona</th>
+                        <th>Oylik To'lov</th>
+                        <th>Boshlash</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var group in Model)
+                    {
+                        <tr>
+                            <td>@group.Id</td>
+                            <td><strong>@group.Name</strong></td>
+                            <td>@group.Subject</td>
+                            <td>
+                                @if (group.Teacher != null)
+                                {
+                                    <span>@group.Teacher.FirstName @group.Teacher.LastName</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (group.Room != null)
+                                {
+                                    <span class="badge bg-secondary">@group.Room.Name</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                <strong>@group.MonthlyFee.ToString("N0") UZS</strong>
+                            </td>
+                            <td>
+                                <small>@group.StartDate.ToString("dd.MM.yyyy")</small>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details", "Group", new { id = group.Id })" class="btn btn-sm btn-info" title="Ko'rish">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="@Url.Action("Edit", "Group", new { id = group.Id })" class="btn btn-sm btn-warning" title="Tahrirlash">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="@Url.Action("Delete", "Group", new { id = group.Id })" class="btn btn-sm btn-danger" title="O'chirish">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-inbox"></i> Hali guruh yo'q.
+            <a href="@Url.Action("Create", "Group")">Birinchi guruhni yarating</a>
+        </div>
+    }
+</div>

@@ -1,0 +1,87 @@
+﻿@model EduTrack.Service.DTOs.Groups.GroupResultDto
+
+@{
+    ViewData["Title"] = "Guruhni O'chirish";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2 text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Guruhni O'chirish</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    O'chirish Tasdiqlash
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong><i class="bi bi-exclamation-circle"></i> E'tibor!</strong> Siz ushbu guruhni o'chirishni xohlayotgan edingiz.
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">Guruh Nomi</label>
+                        <p><strong>@Model.Name</strong></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">Fani</label>
+                        <p><strong>@Model.Subject</strong></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">O'qituvchi</label>
+                        <p>
+                            @if (Model.Teacher != null)
+                            {
+                                <strong>@Model.Teacher.FirstName @Model.Teacher.LastName</strong>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">Xona</label>
+                        <p>
+                            @if (Model.Room != null)
+                            {
+                                <strong>@Model.Room.Name</strong>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">Oylik To'lov</label>
+                        <p><span class="badge bg-warning text-dark">@Model.MonthlyFee.ToString("N0") UZS</span></p>
+                    </div>
+
+                    <hr>
+
+                    <p class="text-muted small">Bu amalni orqaga qaytarish mumkin emas. Ma'lumotlar bazadan soft-delete qilinadi.</p>
+
+                    <div class="d-flex gap-2">
+                        <form method="post" action="@Url.Action("Delete", "Group", new { id = Model.Id })" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Ha, O'chirish
+                            </button>
+                        </form>
+                        <a href="@Url.Action("Details", "Group", new { id = Model.Id })" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Bekor qilish
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
