@@ -82,8 +82,6 @@ namespace EduTrack.MVC.Controllers
                     return View(dto);
                 }
 
-                dto.PasswordHash = HashPassword(dto.PasswordHash);
-
                 var createdUser = await _service.AddAsync(dto);
                 TempData["SuccessMessage"] = $"User '{createdUser.FirstName} {createdUser.LastName}' created successfully!";
                 return RedirectToAction(nameof(Index));
@@ -204,16 +202,6 @@ namespace EduTrack.MVC.Controllers
             {
                 TempData["ErrorMessage"] = ex.Message;
                 return RedirectToAction(nameof(Index));
-            }
-        }
-
-        // Helper method to hash password
-        private string HashPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Convert.ToBase64String(hashedBytes);
             }
         }
     }
