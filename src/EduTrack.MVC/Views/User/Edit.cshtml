@@ -53,37 +53,35 @@
                             <input type="tel" class="form-control" name="PhoneNumber" value="@Model.PhoneNumber">
                         </div>
 
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" name="Email" value="@Model.Email" required>
+                        </div>
+
                         <!-- Role -->
                         <div class="mb-3">
                             <label class="form-label">Role *</label>
                             <select class="form-select" name="Role" required>
                                 <option value="">-- Select Role --</option>
-                                @if (ViewBag.Roles != null)
+                                @foreach (var role in ViewBag.Roles)
                                 {
-                                    @foreach (var role in ViewBag.Roles)
-                                    {
-                                        var isSelected = (int)Model.Role == role.Value;
-                                        if (isSelected)
-                                        {
-                                            <option value="@role.Value" selected>@role.Text</option>
-                                        }
-                                        else
-                                        {
-                                            <option value="@role.Value">@role.Text</option>
-                                        }
-                                    }
+                                    <option value="@role.Value"
+                                            selected="@(role.Value == (int)Model.Role)">
+                                        @role.Text
+                                    </option>
                                 }
                             </select>
                         </div>
 
-                        <!-- Password (Optional for Edit) -->
-                        <div class="mb-3">
+                        <!-- Password (Optional for Edit) this is not true change password is here! -->
+                       @*  <div class="mb-3">
                             <label class="form-label">New Password (Leave blank to keep current)</label>
                             <input type="password" class="form-control" name="PasswordHash" placeholder="Enter new password only if you want to change it">
                             <small class="text-muted d-block mt-1">
                                 <i class="bi bi-info-circle"></i> Only enter if you want to change the password
                             </small>
-                        </div>
+                        </div> *@
 
                         <!-- Buttons -->
                         <div class="d-flex gap-2">

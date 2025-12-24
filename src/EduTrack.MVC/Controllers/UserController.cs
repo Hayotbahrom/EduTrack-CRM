@@ -114,7 +114,8 @@ namespace EduTrack.MVC.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     PhoneNumber = user.PhoneNumber,
-                    PasswordHash = "" // Don't pass actual hash
+                    Email = user.Email,
+                    Role = user.Role,
                 };
 
                 ViewBag.Roles = _enumHelper.GetRoleList();
@@ -146,17 +147,6 @@ namespace EduTrack.MVC.Controllers
                     ModelState.AddModelError(string.Empty, "User ID mismatch.");
                     ViewBag.Roles = _enumHelper.GetRoleList();
                     return View(dto);
-                }
-
-                // Only hash if password is provided
-                if (!string.IsNullOrEmpty(dto.PasswordHash))
-                {
-                    dto.PasswordHash = HashPassword(dto.PasswordHash);
-                }
-                else
-                {
-                    // Keep existing password - set to empty to indicate no change
-                    dto.PasswordHash = "";
                 }
 
                 var updatedUser = await _service.UpdateAsync(id, dto);

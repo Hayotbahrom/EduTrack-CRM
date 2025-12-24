@@ -71,6 +71,7 @@ namespace EduTrack.Service.Services
             user.LastName = dto.LastName;
             user.Email = dto.Email;
             user.PhoneNumber = dto.PhoneNumber;
+            user.Role = dto.Role;
             user.UpdatedAt = DateTime.UtcNow;
 
             var result = await _repository.UpdateAsync(user);
