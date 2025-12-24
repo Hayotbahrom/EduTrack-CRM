@@ -1,6 +1,7 @@
 using AutoMapper;
 using EduTrack.Data.IRepositories;
 using EduTrack.Domain.Entities;
+using EduTrack.Service.DTOs;
 using EduTrack.Service.DTOs.Users;
 using EduTrack.Service.Exceptions;
 using EduTrack.Service.Interfaces;
@@ -31,11 +32,11 @@ public class UserService(IRepository<User> repository, IMapper mapper) : IUserSe
         return _mapper.Map<UserResultDto>(result);
     }
 
-    public dynamic GetUserRoles()
+    public List<EnumItem> GetUserRoles()
     {
         var roles = Enum.GetValues(typeof(EduTrack.Domain.Enums.UserRole))
                 .Cast<EduTrack.Domain.Enums.UserRole>()
-                .Select(r => new { Value = (int)r, Text = r.ToString() })
+                .Select(r => new EnumItem { Value = ((int)r), Text = r.ToString() })
                 .ToList();
         return roles;
     }
