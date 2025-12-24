@@ -1,3 +1,4 @@
+using EduTrack.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace EduTrack.Service.DTOs.Users
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string PasswordHash { get; set; }
+        public UserRole Role { get; set; }
     }
 }

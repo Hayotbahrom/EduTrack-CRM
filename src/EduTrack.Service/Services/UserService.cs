@@ -28,13 +28,7 @@ namespace EduTrack.Service.Services
                 throw new CustomException(404, "User already exist with Email");
             }
 
-            var mappedUser = new User
-            {
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Email = dto.Email,
-                PhoneNumber = dto.PhoneNumber,
-            };
+            var mappedUser = _mapper.Map<User>(dto);
 
             var result = await _repository.InsertAsync(mappedUser);
             return _mapper.Map<UserResultDto>(result);

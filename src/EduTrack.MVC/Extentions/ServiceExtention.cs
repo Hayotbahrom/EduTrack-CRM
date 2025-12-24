@@ -29,6 +29,7 @@ public static class ServiceExtention
         services.AddScoped<IRoomService, RoomService>();
         services.AddScoped<IStudentService, StudentService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IEnumHelperService, EnumHelperService>();
 
     }   
 }

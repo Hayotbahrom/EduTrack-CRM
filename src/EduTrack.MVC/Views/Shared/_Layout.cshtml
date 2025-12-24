@@ -62,26 +62,37 @@
             <div class="brand">
                 <i class="bi bi-book-fill me-2"></i> EduTrack
             </div>
-
             <ul class="nav flex-column mt-3">
+
+                <!-- DASHBOARD -->
                 <li class="nav-item">
                     <a class="nav-link active" asp-controller="Home" asp-action="Index">
                         <i class="bi bi-speedometer2 me-2"></i> Dashboard
                     </a>
                 </li>
 
+                <!-- STRUCTURE -->
+                <li class="nav-item mt-3 text-uppercase text-secondary small px-3">
+                    Structure
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Branch" asp-action="Index">
-                        <i class="bi bi-building me-2"></i> Branches
+                        <i class="bi bi-building-fill me-2"></i> Branches
                     </a>
                 </li>
-                <li>
-                    <li class="nav-item">
+
+                <li class="nav-item">
                     <a class="nav-link" asp-controller="Room" asp-action="Index">
                         <i class="bi bi-door-closed-fill me-2"></i> Rooms
                     </a>
                 </li>
-                
+
+                <!-- PEOPLE -->
+                <li class="nav-item mt-3 text-uppercase text-secondary small px-3">
+                    People
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Student" asp-action="Index">
                         <i class="bi bi-people-fill me-2"></i> Students
@@ -90,32 +101,52 @@
 
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Instructor" asp-action="Index">
-                        <i class="bi bi-person-badge-fill me-2"></i> Instructors
+                        <i class="bi bi-mortarboard-fill me-2"></i> Instructors
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-journal-text me-2"></i> Courses
+                    <a class="nav-link" asp-controller="User" asp-action="Index">
+                        <i class="bi bi-person-gear me-2"></i> Users
+                    </a>
+                </li>
+
+                <!-- OPERATIONS -->
+                <li class="nav-item mt-3 text-uppercase text-secondary small px-3">
+                    Operations
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Attendance" asp-action="Index">
+                        <i class="bi bi-calendar-check-fill me-2"></i> Attendance
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="bi bi-bar-chart-fill me-2"></i> Reports
+                    <a class="nav-link" asp-controller="Payment" asp-action="Index">
+                        <i class="bi bi-credit-card-fill me-2"></i> Payments
                     </a>
                 </li>
 
-                <li class="nav-item mt-3">
-                    <hr class="text-secondary mx-3">
+                <!-- SYSTEM -->
+                <li class="nav-item mt-3 text-uppercase text-secondary small px-3">
+                    System
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Admin" asp-action="Index">
+                        <i class="bi bi-shield-lock-fill me-2"></i> Admin Panel
+                    </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Home" asp-action="Privacy">
-                        <i class="bi bi-shield-lock-fill me-2"></i> Privacy
+                        <i class="bi bi-lock-fill me-2"></i> Privacy
                     </a>
                 </li>
+
             </ul>
+
         </aside>
 
         <!-- CONTENT -->
