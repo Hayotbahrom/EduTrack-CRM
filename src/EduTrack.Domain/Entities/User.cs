@@ -12,6 +12,6 @@ namespace EduTrack.Domain.Entities
         public string PasswordHash { get; set; }
         public UserRole Role { get; set; }
 
-        public ICollection<Group> Groups { get; set; }
+        public ICollection<Group> Groups { get; set; } = new List<Group>();
     }
 }

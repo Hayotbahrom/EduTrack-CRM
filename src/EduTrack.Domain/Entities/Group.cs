@@ -25,8 +25,8 @@ namespace EduTrack.Domain.Entities
         public int TeacherId { get; set; }
         public User Teacher { get; set; }
 
-        public ICollection<StudentGroup> StudentGroups { get; set; }
-        public ICollection<Attendance> Attendances { get; set;  }
-        public ICollection<Payment> Payments { get; set;  }
+        public ICollection<StudentGroup> StudentGroups { get; set; } = [];
+        public ICollection<Attendance> Attendances { get; set; } = [];
+        public ICollection<Payment> Payments { get; set; } = [];
     }
 }

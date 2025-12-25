@@ -16,6 +16,6 @@ namespace EduTrack.Domain.Entities
         public int BranchId { get; set; }
         public Branch Branch { get; set; }
 
-        public ICollection<Group> Groups { get; set; }
+        public ICollection<Group> Groups { get; set; } = new List<Group>();
     }
 }

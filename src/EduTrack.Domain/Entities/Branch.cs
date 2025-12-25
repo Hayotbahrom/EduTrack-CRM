@@ -8,7 +8,7 @@ namespace EduTrack.Domain.Entities
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
 
-        public ICollection<Room> Rooms { get; set; }
-        public ICollection<Group> Groups { get; set; }
+        public ICollection<Room> Rooms { get; set; } = [];
+        public ICollection<Group> Groups { get; set; } = [];
     }
 }
