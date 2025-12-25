@@ -22,7 +22,7 @@ namespace EduTrack.Domain.Entities
         public int BranchId { get; set; }
         public Branch Branch { get; set; }
 
-        public int TeacherId { get; set; }
+        public int? TeacherId { get; set; }
         public User Teacher { get; set; }
 
         public ICollection<StudentGroup> StudentGroups { get; set; } = [];
