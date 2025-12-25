@@ -111,7 +111,7 @@ public class GroupController(
             if (!ModelState.IsValid)
             {
                 var branches = await _branchService.GetAllAsync();
-                var teachers = await _userService.GetAllAsync();
+                var teachers = await _userService.GetAllTeachersAsync();
                 var rooms = await _roomService.GetAllByBranchIdAsync(dto.BranchId);
 
                 ViewBag.Branches = branches;
@@ -144,7 +144,7 @@ public class GroupController(
             var group = await _service.GetByIdAsync(id);
             var branches = await _branchService.GetAllAsync();
             var rooms = await _roomService.GetAllByBranchIdAsync(group.BranchId);
-            var teachers = await _userService.GetAllAsync();
+            var teachers = await _userService.GetAllTeachersAsync();
 
             ViewBag.Branches = branches;
             ViewBag.Rooms = rooms;
@@ -171,7 +171,7 @@ public class GroupController(
             {
                 var branches = await _branchService.GetAllAsync();
                 var rooms = await _roomService.GetAllByBranchIdAsync(dto.BranchId);
-                var teachers = await _userService.GetAllAsync();
+                var teachers = await _userService.GetAllTeachersAsync();
 
                 ViewBag.Branches = branches;
                 ViewBag.Rooms = rooms;
@@ -187,7 +187,7 @@ public class GroupController(
             TempData["ErrorMessage"] = ex.Message;
             var branches = await _branchService.GetAllAsync();
             var rooms = await _roomService.GetAllByBranchIdAsync(dto.BranchId);
-            var teachers = await _userService.GetAllAsync();
+            var teachers = await _userService.GetAllTeachersAsync();
             ViewBag.Branches = branches;
             ViewBag.Rooms = rooms;
             ViewBag.Teachers = teachers;
@@ -218,7 +218,7 @@ public class GroupController(
     private async Task PopulateDropdownsAsync()
     {
         ViewBag.Branches = await _branchService.GetAllAsync();
-        ViewBag.Users = await _userService.GetAllAsync();
+        ViewBag.Teachers = await _userService.GetAllTeachersAsync();
         ViewBag.Rooms = new List<RoomResultDto>();
     }
 }
