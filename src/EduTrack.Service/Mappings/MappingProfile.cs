@@ -5,6 +5,7 @@ using EduTrack.Service.DTOs.Branches;
 using EduTrack.Service.DTOs.Groups;
 using EduTrack.Service.DTOs.Payments;
 using EduTrack.Service.DTOs.Rooms;
+using EduTrack.Service.DTOs.StudentGroups;
 using EduTrack.Service.DTOs.Students;
 using EduTrack.Service.DTOs.Users;
 
@@ -19,6 +20,11 @@ public class MappingProfile : Profile
         CreateMap<Student, StudentCreationDto>().ReverseMap();
         CreateMap<Student, StudentResultDto>().ReverseMap();
         CreateMap<Student, StudentUpdateDto>().ReverseMap();
+
+        // StudentGroup Mappings
+        CreateMap<StudentGroup, StudentGroupCreationDto>().ReverseMap();
+        CreateMap<StudentGroup, StudentGroupResultDto>().ReverseMap();
+        CreateMap<StudentGroup, StudentGroupUpdateDto>().ReverseMap();
 
         // Payment Mappings
         CreateMap<Payment, PaymentUpdateDto>().ReverseMap();
