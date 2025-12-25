@@ -63,7 +63,12 @@ namespace EduTrack.Service.Services
 
         private async Task<Group> IsExistAsync(int id)
         {
-            var group = await _repository.SelectByIdAsync(id)
+            var group = await _repository.SelectAll()
+                .Where(group => group.IsDeleted == false && group.Id == id)
+                .Include(g => g.Room)
+                .Include(g => g.Branch)
+                .Include(g => g.Teacher)
+                .FirstOrDefaultAsync()
                 ?? throw new CustomException(404, "Group not found");
 
             return group;

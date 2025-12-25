@@ -55,7 +55,7 @@ public class GroupController(
     {
         try
         {
-            var group = await _service.RemoveAsync(id);
+            var group = await _service.GetByIdAsync(id);
             return RedirectToAction(nameof(Index));
         }
         catch (CustomException ex)
@@ -152,7 +152,22 @@ public class GroupController(
             ViewBag.SelectedBranchId = group.BranchId;
             ViewBag.SelectedRoomId = group.RoomId;
             ViewBag.SelectedTeacherId = group.TeacherId;
-            return View(group);
+            
+            var updateGroup = new GroupUpdateDto
+            {
+                Id = group.Id,
+                Name = group.Name,
+                Subject = group.Subject,
+                Description = group.Description,
+                MonthlyFee = group.MonthlyFee,
+                StartDate = group.StartDate,
+                EndDate = group.EndDate,
+                RoomId = group.RoomId,
+                BranchId = group.BranchId,
+                TeacherId = group.TeacherId,
+            };
+
+            return View(updateGroup);
         }
         catch (Exception ex)
         {

@@ -78,7 +78,11 @@ public class PaymentService(IRepository<Payment> repository, IMapper mapper) : I
     }
     private async Task<Payment> IsExistAsync(int id)
     {
-        var payment = await _repository.SelectByIdAsync(id)
+        var payment = await _repository.SelectAll()
+            .Where(p => p.Id == id && p.IsDeleted == false)
+            .Include(p => p.Student)
+            .Include(p => p.Group)
+            .FirstOrDefaultAsync()
             ?? throw new CustomException(404, "Payment not found id");
         return payment;
     }
