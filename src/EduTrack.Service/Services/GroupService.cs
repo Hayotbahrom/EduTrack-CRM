@@ -5,11 +5,6 @@ using EduTrack.Service.DTOs.Groups;
 using EduTrack.Service.Exceptions;
 using EduTrack.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace EduTrack.Service.Services
@@ -22,11 +17,11 @@ namespace EduTrack.Service.Services
         public async Task<GroupResultDto> AddAsync(GroupCreationDto dto)
         {
             var group = _mapper.Map<Group>(dto);
-            
+
             var createdGroup = await _repository.InsertAsync(group);
-            
+
             var resultDto = _mapper.Map<GroupResultDto>(createdGroup);
-            
+
             return resultDto;
         }
 
@@ -35,6 +30,9 @@ namespace EduTrack.Service.Services
             var groups = await _repository
                 .SelectAll()
                 .Where(r => r.IsDeleted == false)
+                .Include(g => g.Room)
+                .Include(g => g.Branch)
+                .Include(g => g.Teacher)
                 .ToListAsync();
             return _mapper.Map<IEnumerable<GroupResultDto>>(groups);
         }
@@ -59,7 +57,7 @@ namespace EduTrack.Service.Services
             updatedGroup.UpdatedAt = DateTime.UtcNow;
 
             await _repository.UpdateAsync(updatedGroup);
-            
+
             return _mapper.Map<GroupResultDto>(updatedGroup);
         }
 

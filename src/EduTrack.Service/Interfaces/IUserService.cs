@@ -15,5 +15,8 @@ namespace EduTrack.Service.Interfaces
         Task<UserResultDto> UpdateAsync(int id, UserUpdateDto dto);
         Task<UserResultDto> GetByIdAsync(int id);
         Task<IEnumerable<UserResultDto>> GetAllAsync();
+        Task<IEnumerable<UserResultDto>> GetAllTeachersAsync();
+        Task<UserResultDto> GetByEmailAsync(string email);
+        Task<UserResultDto> GetByPhoneNumberAsync(string phoneNumber);
     }
 }

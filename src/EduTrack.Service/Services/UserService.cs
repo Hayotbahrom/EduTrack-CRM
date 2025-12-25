@@ -1,6 +1,7 @@
 using AutoMapper;
 using EduTrack.Data.IRepositories;
 using EduTrack.Domain.Entities;
+using EduTrack.Domain.Enums;
 using EduTrack.Service.DTOs;
 using EduTrack.Service.DTOs.Users;
 using EduTrack.Service.Exceptions;
@@ -45,6 +46,28 @@ public class UserService(IRepository<User> repository, IMapper mapper) : IUserSe
     {
         var users = await _repository.SelectAll().Where(r => r.IsDeleted == false).ToListAsync();
         return _mapper.Map<IEnumerable<UserResultDto>>(users);
+    }
+
+    public async Task<UserResultDto> GetByEmailAsync(string email)
+    {
+        var user = await _repository.SelectAsync(u => u.Email == email && u.IsDeleted == false)
+            ?? throw new CustomException(404, "User not found with this email.");
+        return _mapper.Map<UserResultDto>(user);
+    }
+
+    public async Task<UserResultDto> GetByPhoneNumberAsync(string phoneNumber)
+    {
+        var user = await _repository.SelectAsync(u => u.PhoneNumber == phoneNumber && u.IsDeleted == false)
+            ?? throw new CustomException(404, "User not found with this phone number.");
+        return _mapper.Map<UserResultDto>(user);
+    }
+
+    public async Task<IEnumerable<UserResultDto>> GetAllTeachersAsync()
+    {
+        var teachers = await _repository.SelectAll()
+            .Where(u => (u.Role == UserRole.Teacher || u.Role == UserRole.AssistantTeacher) && u.IsDeleted == false)
+            .ToListAsync();
+        return _mapper.Map<IEnumerable<UserResultDto>>(teachers);
     }
 
     public async Task<UserResultDto> GetByIdAsync(int id)
