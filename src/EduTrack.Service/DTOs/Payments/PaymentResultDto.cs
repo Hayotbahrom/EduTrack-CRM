@@ -13,7 +13,7 @@ namespace EduTrack.Service.DTOs.Payments
         public int Id { get; set; }
         public decimal Amount { get; set; }
         public DateTime PaymentDate { get; set; }
-        public string ForMoth { get; set; } // e.g., January, February, etc. or "Full Year" for annual payments
+        public string ForMonth { get; set; } // e.g., January, February, etc. or "Full Year" for annual payments
         public string Description { get; set; } // e.g., Tuition, Exam Fee, etc.
         public string PaymentMethod { get; set; } // e.g., Cash, Card, Online
 
