@@ -41,6 +41,18 @@ public class RoomService(IRepository<Room> repository, IMapper mapper) : IRoomSe
         return _mapper.Map<RoomResultDto>(room);
     }
 
+    public async Task<IEnumerable<RoomResultDto>> GetAllByBranchIdAsync(int branchId)
+    {
+        var rooms = await _repository
+            .SelectAll()
+            .Include(r => r.Branch)
+            .Include(r => r.Groups)
+            .Where(r => r.IsDeleted == false && r.BranchId == branchId)
+            .ToListAsync();
+
+        return _mapper.Map<IEnumerable<RoomResultDto>>(rooms);
+    }
+
     public async Task<bool> RemoveAsync(int id)
     {
         var result = await IsExistAsync(id);

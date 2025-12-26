@@ -1,0 +1,59 @@
+﻿@model EduTrack.Service.DTOs.Users.UserResultDto
+
+@{
+    ViewData["Title"] = "Delete User";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2 text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Delete User</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    Confirm Deletion
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>Warning!</strong> You are about to delete this user record.
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">User Name</label>
+                        <p><strong>@Model.FirstName @Model.LastName</strong></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">Email</label>
+                        <p>@Model.Email</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted">Role</label>
+                        <p><span class="badge bg-secondary">@Model.Role</span></p>
+                    </div>
+
+                    <hr>
+
+                    <p class="text-muted small">This action will soft-delete the record (data retained in database).</p>
+
+                    <div class="d-flex gap-2">
+                        <form method="post" action="@Url.Action("Delete", "User", new { id = Model.Id })" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Yes, Delete
+                            </button>
+                        </form>
+                        <a href="@Url.Action("Details", "User", new { id = Model.Id })" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EduTrack.Data.Migrations
 {
     [DbContext(typeof(EduDbContext))]
-    [Migration("20251218140920_updatedCommon")]
-    partial class updatedCommon
+    [Migration("20251225081912_InitialNoActionDeleteBehaviour")]
+    partial class InitialNoActionDeleteBehaviour
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,6 +109,9 @@ namespace EduTrack.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -123,6 +126,7 @@ namespace EduTrack.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("MonthlyFee")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
@@ -139,17 +143,19 @@ namespace EduTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
 
                     b.HasIndex("RoomId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("TeacherId");
 
                     b.ToTable("Groups");
                 });
@@ -163,6 +169,7 @@ namespace EduTrack.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -222,7 +229,6 @@ namespace EduTrack.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -289,32 +295,27 @@ namespace EduTrack.Data.Migrations
 
             modelBuilder.Entity("EduTrack.Domain.Entities.StudentGroup", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GroupId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("StudentId", "GroupId");
 
                     b.HasIndex("GroupId");
-
-                    b.HasIndex("StudentId");
 
                     b.ToTable("StudentGroups");
                 });
@@ -353,6 +354,9 @@ namespace EduTrack.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -366,13 +370,13 @@ namespace EduTrack.Data.Migrations
                     b.HasOne("EduTrack.Domain.Entities.Group", "Group")
                         .WithMany("Attendances")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("EduTrack.Domain.Entities.Student", "Student")
                         .WithMany("Attendances")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -382,21 +386,28 @@ namespace EduTrack.Data.Migrations
 
             modelBuilder.Entity("EduTrack.Domain.Entities.Group", b =>
                 {
+                    b.HasOne("EduTrack.Domain.Entities.Branch", "Branch")
+                        .WithMany("Groups")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("EduTrack.Domain.Entities.Room", "Room")
                         .WithMany("Groups")
                         .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("EduTrack.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("EduTrack.Domain.Entities.User", "Teacher")
+                        .WithMany("Groups")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Branch");
 
                     b.Navigation("Room");
 
-                    b.Navigation("User");
+                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("EduTrack.Domain.Entities.Payment", b =>
@@ -404,13 +415,13 @@ namespace EduTrack.Data.Migrations
                     b.HasOne("EduTrack.Domain.Entities.Group", "Group")
                         .WithMany("Payments")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("EduTrack.Domain.Entities.Student", "Student")
                         .WithMany("Payments")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -423,7 +434,7 @@ namespace EduTrack.Data.Migrations
                     b.HasOne("EduTrack.Domain.Entities.Branch", "Branch")
                         .WithMany("Rooms")
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Branch");
@@ -450,6 +461,8 @@ namespace EduTrack.Data.Migrations
 
             modelBuilder.Entity("EduTrack.Domain.Entities.Branch", b =>
                 {
+                    b.Navigation("Groups");
+
                     b.Navigation("Rooms");
                 });
 
@@ -474,6 +487,11 @@ namespace EduTrack.Data.Migrations
                     b.Navigation("Payments");
 
                     b.Navigation("StudentGroups");
+                });
+
+            modelBuilder.Entity("EduTrack.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }

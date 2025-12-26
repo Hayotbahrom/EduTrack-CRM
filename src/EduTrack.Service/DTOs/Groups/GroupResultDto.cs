@@ -17,11 +17,16 @@ namespace EduTrack.Service.DTOs.Groups
         public decimal MonthlyFee { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         public int RoomId { get; set; }
         public Room Room { get; set; }
+        
+        public int BranchId { get; set; }
+        public Branch Branch { get; set; }
 
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public int TeacherId { get; set; }
+        public User Teacher { get; set; }
     }
 }

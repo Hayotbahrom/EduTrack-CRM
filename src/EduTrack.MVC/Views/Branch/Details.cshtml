@@ -70,4 +70,54 @@
             </div>
         </div>
     </div>
+
+    <!-- Rooms Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <i class="bi bi-door-closed"></i> Rooms in this Branch
+                </div>
+                <div class="card-body">
+                    @if (Model.Rooms != null && Model.Rooms.Any())
+                    {
+                        <table class="table table-sm table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Capacity</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var room in Model.Rooms)
+                                {
+                                    <tr>
+                                        <td>@room.Id</td>
+                                        <td>@room.Name</td>
+                                        <td><span class="badge bg-info">@room.Capacity</span></td>
+                                        <td>@(string.IsNullOrEmpty(room.Description) ? "-" : room.Description)</td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Room", new { id = room.Id })" class="btn btn-sm btn-info">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="@Url.Action("Edit", "Room", new { id = room.Id })" class="btn btn-sm btn-warning">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No rooms found in this branch.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

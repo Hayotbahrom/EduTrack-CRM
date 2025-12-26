@@ -86,4 +86,56 @@
             </div>
         </div>
     </div>
+
+    <!-- Groups Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-book-fill"></i> Groups in this Room
+                </div>
+                <div class="card-body">
+                    @if (Model.Groups != null && Model.Groups.Any())
+                    {
+                        <table class="table table-sm table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Subject</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var group in Model.Groups)
+                                {
+                                    <tr>
+                                        <td>@group.Id</td>
+                                        <td><strong>@group.Name</strong></td>
+                                        <td>@group.Subject</td>
+                                        <td>@group.StartDate.ToString("dd/MM/yyyy")</td>
+                                        <td>@group.EndDate.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Group", new { id = group.Id })" class="btn btn-sm btn-info">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="@Url.Action("Edit", "Group", new { id = group.Id })" class="btn btn-sm btn-warning">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No groups found in this room.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -11,11 +11,11 @@ namespace EduTrack.Domain.Entities
     {
         public string Name { get; set; }
         public int Capacity { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public int BranchId { get; set; }
         public Branch Branch { get; set; }
 
-        public ICollection<Group> Groups { get; set; }
+        public ICollection<Group> Groups { get; set; } = new List<Group>();
     }
 }

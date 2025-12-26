@@ -16,8 +16,8 @@ namespace EduTrack.Domain.Entities
         public string Address { get; set; }
         public string ParentPhoneNumber { get; set; }
 
-        public ICollection<StudentGroup> StudentGroups { get; set; }
-        public ICollection<Payment> Payments { get; set; }
-        public ICollection<Attendance> Attendances { get; set; }
+        public ICollection<StudentGroup> StudentGroups { get; set; } = new List<StudentGroup>();
+        public ICollection<Payment> Payments { get; set; } = [];
+        public ICollection<Attendance> Attendances { get; set; } = [];
     }
 }

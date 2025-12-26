@@ -15,5 +15,6 @@ namespace EduTrack.Service.Interfaces
         Task<RoomResultDto> UpdateAsync(int id, RoomUpdateDto dto);
         Task<RoomResultDto> GetByIdAsync(int id);
         Task<IEnumerable<RoomResultDto>> GetAllAsync();
+        Task<IEnumerable<RoomResultDto>> GetAllByBranchIdAsync(int branchId);
     }
 }
