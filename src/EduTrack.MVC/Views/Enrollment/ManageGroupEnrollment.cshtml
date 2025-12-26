@@ -1,0 +1,259 @@
+﻿@{
+    ViewData["Title"] = "Enrollment Boshqarish";
+    var group = ViewBag.Group as dynamic;
+    var enrolledStudents = ViewBag.EnrolledStudents as IEnumerable<dynamic>;
+    var availableStudents = ViewBag.AvailableStudents as IEnumerable<dynamic>;
+}
+
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="mb-4">
+        <h1 class="h2">
+            <i class="bi bi-sliders"></i> @group.Name - Enrollment Boshqarish
+        </h1>
+        <p class="text-muted">Fani: <strong>@group.Subject</strong></p>
+    </div>
+
+    <!-- Two Column Layout -->
+    <div class="row">
+        <!-- Enrolled Students (Left) -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-check-circle"></i> Ro'yxatga Qo'shilgan Talabalar
+                        <span class="badge bg-light text-dark">@(enrolledStudents?.Count() ?? 0)</span>
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (enrolledStudents != null && enrolledStudents.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var sg in enrolledStudents)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">@sg.Student.FirstName @sg.Student.LastName</h6>
+                                        <small class="text-muted">@sg.Student.PhoneNumber</small>
+                                    </div>
+                                    <button type="button"
+                                            class="btn btn-sm btn-danger remove-single"
+                                            data-student-id="@sg.Student.Id"
+                                            data-group-id="@group.Id">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted">
+                            <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                            <p class="mt-2">Talaba yoq</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Bulk Remove -->
+            @if (enrolledStudents != null && enrolledStudents.Any())
+            {
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <button type="button" class="btn btn-danger w-100" id="bulkRemoveBtn">
+                            <i class="bi bi-trash"></i> Tanlanganlarni O'chirish
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Available Students (Right) -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-plus"></i> Qo'shish Uchun Talabalar
+                        <span class="badge bg-light text-dark">@(availableStudents?.Count() ?? 0)</span>
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (availableStudents != null && availableStudents.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var student in availableStudents)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">@student.FirstName @student.LastName</h6>
+                                        <small class="text-muted">@student.PhoneNumber</small>
+                                    </div>
+                                    <button type="button"
+                                            class="btn btn-sm btn-success add-single"
+                                            data-student-id="@student.Id"
+                                            data-group-id="@group.Id">
+                                        <i class="bi bi-plus-circle"></i>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted">
+                            <i class="bi bi-check-all" style="font-size: 2rem;"></i>
+                            <p class="mt-2">Barcha talabalar qo'shilgan!</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Bulk Add -->
+            @if (availableStudents != null && availableStudents.Any())
+            {
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <button type="button" class="btn btn-success w-100" id="bulkAddBtn">
+                            <i class="bi bi-plus-circle"></i> Hammasini Qo'shish
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-4">
+        <a href="@Url.Action("Details", "Group", new { id = group.Id })" class="btn btn-secondary btn-lg">
+            <i class="bi bi-arrow-left"></i> Orqaga
+        </a>
+    </div>
+</div>
+
+<script>
+    // Single Add
+    document.querySelectorAll('.add-single').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const studentId = this.dataset.studentId;
+            const groupId = this.dataset.groupId;
+
+            try {
+                const response = await fetch('/StudentGroup/Enroll', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({
+                        studentId: parseInt(studentId),
+                        groupId: parseInt(groupId)
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Xatolik: ' + result.message);
+                }
+            } catch (error) {
+                alert('Xatolik: ' + error.message);
+            }
+        });
+    });
+
+    // Single Remove
+    document.querySelectorAll('.remove-single').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            if (!confirm('Ushbu talab-ni o\'chirishni xohlaymisiz?')) return;
+
+            const studentId = this.dataset.studentId;
+            const groupId = this.dataset.groupId;
+
+            try {
+                const response = await fetch('/StudentGroup/Remove', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: `studentId=${studentId}&groupId=${groupId}`
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert('Xatolik: ' + result.message);
+                }
+            } catch (error) {
+                alert('Xatolik: ' + error.message);
+            }
+        });
+    });
+
+    // Bulk Add
+    document.getElementById('bulkAddBtn')?.addEventListener('click', async function() {
+        if (!confirm('Barcha talab-larni qo\'shishni xohlaymisiz?')) return;
+
+        const groupId = @group.Id;
+        const studentIds = Array.from(document.querySelectorAll('.add-single')).map(btn =>
+            parseInt(btn.dataset.studentId)
+        );
+
+        try {
+            const response = await fetch('/StudentGroup/BulkEnroll', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({
+                    groupId: groupId,
+                    studentIds: studentIds
+                })
+            });
+
+            const result = await response.json();
+            alert(result.message);
+            if (result.success) {
+                location.reload();
+            }
+        } catch (error) {
+            alert('Xatolik: ' + error.message);
+        }
+    });
+
+    // Bulk Remove
+    document.getElementById('bulkRemoveBtn')?.addEventListener('click', async function() {
+        if (!confirm('Tanlangan talaba-larni o\'chirishni xohlaymisiz?')) return;
+
+        const groupId = @group.Id;
+        const studentIds = Array.from(document.querySelectorAll('.remove-single')).map(btn =>
+            parseInt(btn.dataset.studentId)
+        );
+
+        try {
+            const response = await fetch('/StudentGroup/BulkRemove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({
+                    groupId: groupId,
+                    studentIds: studentIds
+                })
+            });
+
+            const result = await response.json();
+            alert(result.message);
+            if (result.success) {
+                location.reload();
+            }
+        } catch (error) {
+            alert('Xatolik: ' + error.message);
+        }
+    });
+</script>

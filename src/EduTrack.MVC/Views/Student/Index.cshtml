@@ -41,7 +41,14 @@
                     @foreach (var student in Model)
                     {
                         <tr>
-                            <td>@student.Id</td>
+                            <td>
+                                @student.Id
+                                <!-- Student/Details.cshtml-da -->
+                                <a href="@Url.Action("Enrollment", "StudentGroup", new { studentId = student.Id })"
+                                   class="btn btn-primary">
+                                    Guruhlari
+                                </a>
+                            </td>
                             <td><strong>@student.FirstName @student.LastName</strong></td>
                             <td>@student.PhoneNumber</td>
                             <td>@student.ParentPhoneNumber</td>

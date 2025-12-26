@@ -52,7 +52,14 @@
                     @foreach (var group in Model)
                     {
                         <tr>
-                            <td>@group.Id</td>
+                            <td>
+                                @group.Id
+                                <!-- Group/Details.cshtml-da -->
+                                <a href="@Url.Action("ManageGroupEnrollment", "Enrollment", new { groupId = group.Id })"
+                                   class="btn btn-primary">
+                                    Enrollment Boshqarish
+                                </a>
+                            </td>
                             <td><strong>@group.Name</strong></td>
                             <td>@group.Subject</td>
                             <td>

@@ -5,6 +5,7 @@ using EduTrack.Service.DTOs.StudentGroups;
 using EduTrack.Service.DTOs.Students;
 using EduTrack.Service.Exceptions;
 using EduTrack.Service.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace EduTrack.Service.Services;
 
@@ -67,7 +68,7 @@ public class StudentGroupService : IStudentGroupService
     {
         var studentGroup = await _studentGroupRepository.SelectAsync(
             sg => sg.StudentId == studentId && sg.GroupId == groupId)
-            ?? throw new CustomException(404, "Bu o'quvchi bu guruha ro'yxatda yo'q");
+            ?? throw new CustomException(404, "Bu o'quvchi bu guruhda ro'yxatda yo'q");
 
         await _studentGroupRepository.DeleteAsync(studentGroup.Id);
         return true;
@@ -103,9 +104,11 @@ public class StudentGroupService : IStudentGroupService
         var student = await _studentRepository.SelectByIdAsync(studentId)
             ?? throw new CustomException(404, "O'quvchi topilmadi");
 
-        var studentGroups = _studentGroupRepository.SelectAll()
+        var studentGroups = await _studentGroupRepository.SelectAll()
             .Where(sg => sg.StudentId == studentId)
-            .ToList();
+            .Include(sg => sg.Group)
+            .Include(sg => sg.Student)
+            .ToListAsync();
 
         var result = new List<StudentGroupResultDto>();
 
