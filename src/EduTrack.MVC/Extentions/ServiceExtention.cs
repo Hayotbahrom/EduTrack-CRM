@@ -30,6 +30,6 @@ public static class ServiceExtention
         services.AddScoped<IStudentService, StudentService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IEnumHelperService, EnumHelperService>();
-
+        services.AddScoped<IStudentGroupService, StudentGroupService>();
     }   
 }

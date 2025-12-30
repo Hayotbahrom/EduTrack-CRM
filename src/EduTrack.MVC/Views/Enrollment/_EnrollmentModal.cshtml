@@ -1,0 +1,170 @@
+﻿<!-- Views/StudentGroup/_EnrollmentModal.cshtml -->
+<!-- =====================================================
+     PARTIAL VIEW - Enrollment Modal (Qayta ishlatiladi)
+     ===================================================== -->
+
+<div class="modal fade" id="enrollmentModal" tabindex="-1" role="dialog" aria-labelledby="enrollmentModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <!-- Header -->
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="enrollmentModalLabel">
+                    <i class="bi bi-person-plus"></i> O'quvchini Ro'yxatga Qo'shish
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+                <!-- Student Selection -->
+                <div class="mb-3">
+                    <label class="form-label"><strong>O'quvchini Tanlang *</strong></label>
+                    <select class="form-select" id="studentSelect" required>
+                        <option value="">-- O'quvchi tanlang --</option>
+                        @if (ViewBag.Students != null)
+                        {
+                            @foreach (var student in ViewBag.Students)
+                            {
+                                <option value="@student.Id">
+                                    @student.FirstName @student.LastName - @student.PhoneNumber
+                                </option>
+                            }
+                        }
+                    </select>
+                    <div class="invalid-feedback d-block" id="studentError"></div>
+                </div>
+
+                <!-- Group Selection -->
+                <div class="mb-3">
+                    <label class="form-label"><strong>Guruhni Tanlang *</strong></label>
+                    <select class="form-select" id="groupSelect" required>
+                        <option value="">-- Guruh tanlang --</option>
+                        @if (ViewBag.Groups != null)
+                        {
+                            @foreach (var group in ViewBag.Groups)
+                            {
+                                <option value="@group.Id">
+                                    @group.Name (@group.Subject) - @group.StartDate.ToString("dd.MM.yyyy")
+                                </option>
+                            }
+                        }
+                    </select>
+                    <div class="invalid-feedback d-block" id="groupError"></div>
+                </div>
+
+                <!-- Alert Messages -->
+                <div id="enrollmentMessage" class="alert d-none" role="alert"></div>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Bekor qilish
+                </button>
+                <button type="button" class="btn btn-primary" id="enrollBtn" disabled>
+                    <i class="bi bi-check-circle"></i> Ro'yxatga Qo'shish
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Enable/disable enroll button based on selection
+    const studentSelect = document.getElementById('studentSelect');
+    const groupSelect = document.getElementById('groupSelect');
+    const enrollBtn = document.getElementById('enrollBtn');
+
+    function updateEnrollBtn() {
+        enrollBtn.disabled = !studentSelect.value || !groupSelect.value;
+    }
+
+    studentSelect?.addEventListener('change', updateEnrollBtn);
+    groupSelect?.addEventListener('change', updateEnrollBtn);
+
+    // Enroll button click handler
+    enrollBtn?.addEventListener('click', async function() {
+        const studentId = studentSelect.value;
+        const groupId = groupSelect.value;
+        const messageDiv = document.getElementById('enrollmentMessage');
+
+        // Clear previous errors
+        document.getElementById('studentError').textContent = '';
+        document.getElementById('groupError').textContent = '';
+
+        // Validation
+        let hasError = false;
+        if (!studentId) {
+            document.getElementById('studentError').textContent = 'O\'quvchi-ni tanlang!';
+            hasError = true;
+        }
+        if (!groupId) {
+            document.getElementById('groupError').textContent = 'Guruh-ni tanlang!';
+            hasError = true;
+        }
+
+        if (hasError) {
+            messageDiv.className = 'alert alert-warning d-block';
+            messageDiv.innerHTML = '<i class="bi bi-exclamation-circle"></i> Barcha maydonlarni to\'ldiring!';
+            return;
+        }
+
+        // Disable button during request
+        enrollBtn.disabled = true;
+        enrollBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Jarayonda...';
+
+        try {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            const response = await fetch('/StudentGroup/Enroll', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                body: JSON.stringify({
+                    studentId: parseInt(studentId),
+                    groupId: parseInt(groupId)
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                messageDiv.className = 'alert alert-success d-block';
+                messageDiv.innerHTML = '<i class="bi bi-check-circle"></i> ' + result.message;
+
+                // Reset form
+                studentSelect.value = '';
+                groupSelect.value = '';
+                updateEnrollBtn();
+
+                // Close modal va refresh page after 2 seconds
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('enrollmentModal'));
+                    modal?.hide();
+                    location.reload();
+                }, 2000);
+            } else {
+                messageDiv.className = 'alert alert-danger d-block';
+                messageDiv.innerHTML = '<i class="bi bi-exclamation-circle"></i> ' + (result.message || 'Xatolik yuz berdi');
+                enrollBtn.disabled = false;
+                enrollBtn.innerHTML = '<i class="bi bi-check-circle"></i> Ro\'yxatga Qo\'shish';
+            }
+        } catch (error) {
+            messageDiv.className = 'alert alert-danger d-block';
+            messageDiv.innerHTML = '<i class="bi bi-exclamation-circle"></i> Xatolik: ' + error.message;
+            enrollBtn.disabled = false;
+            enrollBtn.innerHTML = '<i class="bi bi-check-circle"></i> Ro\'yxatga Qo\'shish';
+        }
+    });
+
+    // Clear message when modal opens
+    document.getElementById('enrollmentModal')?.addEventListener('show.bs.modal', function() {
+        const messageDiv = document.getElementById('enrollmentMessage');
+        messageDiv.className = 'alert d-none';
+        messageDiv.innerHTML = '';
+        studentSelect.value = '';
+        groupSelect.value = '';
+        updateEnrollBtn();
+    });
+</script>

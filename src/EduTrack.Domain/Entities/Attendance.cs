@@ -6,7 +6,7 @@ public class Attendance : Auditable
 {
     public DateTime Date { get; set; }
     public bool IsPresent { get; set; }
-    public string Remarks { get; set; }
+    public string? Remarks { get; set; }
 
     public int StudentId { get; set; }
     public Student Student { get; set; }

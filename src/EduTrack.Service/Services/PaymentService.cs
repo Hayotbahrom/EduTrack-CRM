@@ -24,7 +24,7 @@ public class PaymentService(IRepository<Payment> repository, IMapper mapper) : I
         {
             Amount = dto.Amount,
             PaymentDate = dto.PaymentDate,
-            ForMoth = dto.ForMoth,
+            ForMonth = dto.ForMonth,
             Description = dto.Description,
             PaymentMethod = dto.PaymentMethod,
             StudentId = dto.StudentId,
@@ -71,7 +71,7 @@ public class PaymentService(IRepository<Payment> repository, IMapper mapper) : I
     {
         var payment = _repository.SelectAsync(p => 
         p.StudentId == dto.StudentId && 
-        p.ForMoth == dto.ForMoth && 
+        p.ForMonth == dto.ForMonth && 
         p.GroupId == dto.GroupId);
 
         return payment;
