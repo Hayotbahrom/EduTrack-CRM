@@ -5,6 +5,7 @@
     var availableStudents = ViewBag.AvailableStudents as IEnumerable<dynamic>;
 }
 
+@Html.AntiForgeryToken()
 <div class="container-fluid mt-4">
     <!-- Header -->
     <div class="mb-4">
@@ -130,8 +131,20 @@
         </a>
     </div>
 </div>
-
 <script>
+    // CSRF token olish - form tag bo'lmasa ham ishlaydi
+    function getCsrfToken() {
+        // Meta tag dan olishga urinish
+        const metaToken = document.querySelector('meta[name="csrf-token"]');
+        if (metaToken) return metaToken.getAttribute('content');
+
+        // Hidden input dan olishga urinish
+        const inputToken = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (inputToken) return inputToken.value;
+
+        return '';
+    }
+
     // Single Add
     document.querySelectorAll('.add-single').forEach(btn => {
         btn.addEventListener('click', async function() {
@@ -139,11 +152,11 @@
             const groupId = this.dataset.groupId;
 
             try {
-                const response = await fetch('/StudentGroup/Enroll', {
+                const response = await fetch('/Enrollment/Enroll', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        'RequestVerificationToken': getCsrfToken()
                     },
                     body: JSON.stringify({
                         studentId: parseInt(studentId),
@@ -166,19 +179,22 @@
     // Single Remove
     document.querySelectorAll('.remove-single').forEach(btn => {
         btn.addEventListener('click', async function() {
-            if (!confirm('Ushbu talab-ni o\'chirishni xohlaymisiz?')) return;
+            if (!confirm("Ushbu talabani o'chirishni xohlaymisiz?")) return;
 
             const studentId = this.dataset.studentId;
             const groupId = this.dataset.groupId;
 
             try {
-                const response = await fetch('/StudentGroup/Remove', {
+                const response = await fetch('/Enrollment/Remove', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': getCsrfToken()
                     },
-                    body: `studentId=${studentId}&groupId=${groupId}`
+                    body: JSON.stringify({
+                        studentId: parseInt(studentId),
+                        groupId: parseInt(groupId)
+                    })
                 });
 
                 const result = await response.json();
@@ -195,7 +211,7 @@
 
     // Bulk Add
     document.getElementById('bulkAddBtn')?.addEventListener('click', async function() {
-        if (!confirm('Barcha talab-larni qo\'shishni xohlaymisiz?')) return;
+        if (!confirm("Barcha talabalarni qo'shishni xohlaymisiz?")) return;
 
         const groupId = @group.Id;
         const studentIds = Array.from(document.querySelectorAll('.add-single')).map(btn =>
@@ -203,11 +219,11 @@
         );
 
         try {
-            const response = await fetch('/StudentGroup/BulkEnroll', {
+            const response = await fetch('/Enrollment/BulkEnroll', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    'RequestVerificationToken': getCsrfToken()
                 },
                 body: JSON.stringify({
                     groupId: groupId,
@@ -217,9 +233,7 @@
 
             const result = await response.json();
             alert(result.message);
-            if (result.success) {
-                location.reload();
-            }
+            if (result.success) location.reload();
         } catch (error) {
             alert('Xatolik: ' + error.message);
         }
@@ -227,7 +241,7 @@
 
     // Bulk Remove
     document.getElementById('bulkRemoveBtn')?.addEventListener('click', async function() {
-        if (!confirm('Tanlangan talaba-larni o\'chirishni xohlaymisiz?')) return;
+        if (!confirm("Tanlangan talabalarni o'chirishni xohlaymisiz?")) return;
 
         const groupId = @group.Id;
         const studentIds = Array.from(document.querySelectorAll('.remove-single')).map(btn =>
@@ -235,11 +249,11 @@
         );
 
         try {
-            const response = await fetch('/StudentGroup/BulkRemove', {
+            const response = await fetch('/Enrollment/BulkRemove', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    'RequestVerificationToken': getCsrfToken()
                 },
                 body: JSON.stringify({
                     groupId: groupId,
@@ -249,9 +263,7 @@
 
             const result = await response.json();
             alert(result.message);
-            if (result.success) {
-                location.reload();
-            }
+            if (result.success) location.reload();
         } catch (error) {
             alert('Xatolik: ' + error.message);
         }

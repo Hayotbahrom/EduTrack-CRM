@@ -3,5 +3,6 @@
 public class StudentGroupCreationDto
 {
     public int StudentId { get; set; }
+
     public int GroupId { get; set; }
 }

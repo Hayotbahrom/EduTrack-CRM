@@ -43,7 +43,7 @@ public class EnrollmentController(
     // =====================================================
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Enroll(StudentGroupCreationDto dto)
+    public async Task<IActionResult> Enroll([FromBody] StudentGroupCreationDto dto)
     {
         try
         {
@@ -73,11 +73,11 @@ public class EnrollmentController(
     // =====================================================
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Remove(int studentId, int groupId)
+    public async Task<IActionResult> Remove([FromBody] StudentGroupCreationDto dto)
     {
         try
         {
-            var result = await _studentGroupService.RemoveStudentAsync(studentId, groupId);
+            var result = await _studentGroupService.RemoveStudentAsync(dto.StudentId, dto.GroupId);
 
             TempData["SuccessMessage"] = "O'quvchi ro'yxatdan chiqarildi!";
             return Json(new { success = true, message = "Muvaffaqiyatli o'chirildi!" });
@@ -228,11 +228,11 @@ public class EnrollmentController(
     // =====================================================
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> BulkEnroll(int groupId, [FromBody] List<int> studentIds)
+    public async Task<IActionResult> BulkEnroll([FromBody] BulkEnrollmentDto request)
     {
         try
         {
-            if (studentIds == null || studentIds.Count == 0)
+            if (request.StudentIds == null || request.StudentIds.Count == 0)
             {
                 return Json(new { success = false, message = "O'quvchilar tanlanmadi" });
             }
@@ -240,14 +240,14 @@ public class EnrollmentController(
             var enrolledCount = 0;
             var failedCount = 0;
 
-            foreach (var studentId in studentIds)
+            foreach (var studentId in request.StudentIds)
             {
                 try
                 {
                     var dto = new StudentGroupCreationDto
                     {
                         StudentId = studentId,
-                        GroupId = groupId
+                        GroupId = request.GroupId
                     };
                     await _studentGroupService.EnrollStudentAsync(dto);
                     enrolledCount++;
@@ -275,11 +275,11 @@ public class EnrollmentController(
     // =====================================================
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> BulkRemove(int groupId, [FromBody] List<int> studentIds)
+    public async Task<IActionResult> BulkRemove([FromBody] BulkEnrollmentDto request)
     {
         try
         {
-            if (studentIds == null || studentIds.Count == 0)
+            if (request.StudentIds == null || request.StudentIds.Count == 0)
             {
                 return Json(new { success = false, message = "O'quvchilar tanlanmadi" });
             }
@@ -287,11 +287,11 @@ public class EnrollmentController(
             var removedCount = 0;
             var failedCount = 0;
 
-            foreach (var studentId in studentIds)
+            foreach (var studentId in request.StudentIds)
             {
                 try
                 {
-                    await _studentGroupService.RemoveStudentAsync(studentId, groupId);
+                    await _studentGroupService.RemoveStudentAsync(studentId, request.GroupId);
                     removedCount++;
                 }
                 catch
