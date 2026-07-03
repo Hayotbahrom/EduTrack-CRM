@@ -70,7 +70,7 @@ public class StudentGroupService : IStudentGroupService
             sg => sg.StudentId == studentId && sg.GroupId == groupId)
             ?? throw new CustomException(404, "Bu o'quvchi bu guruhda ro'yxatda yo'q");
 
-        await _studentGroupRepository.DeleteAsync(studentGroup.Id);
+        await _studentGroupRepository.DeleteAsync(studentGroup);
         return true;
     }
 

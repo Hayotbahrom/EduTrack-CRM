@@ -23,6 +23,13 @@ namespace EduTrack.Data.Repositories
             return true;
         }
 
+        public async Task<bool> DeleteAsync(TEntity entity)
+        {
+            dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<TEntity> InsertAsync(TEntity entity)
         {
             await dbSet.AddAsync(entity);
