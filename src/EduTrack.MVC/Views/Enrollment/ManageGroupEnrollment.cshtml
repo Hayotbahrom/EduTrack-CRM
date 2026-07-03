@@ -1,10 +1,12 @@
-﻿@{
+﻿@using EduTrack.Service.DTOs.Groups
+@using EduTrack.Service.DTOs.Students
+@{
     ViewData["Title"] = "Enrollment Boshqarish";
-    var group = ViewBag.Group as dynamic;
+    var group = ViewBag.Group as GroupResultDto;
     var enrolledStudents = ViewBag.EnrolledStudents as IEnumerable<dynamic>;
-    var availableStudents = ViewBag.AvailableStudents as IEnumerable<dynamic>;
+    var availableStudents = ViewBag.AvailableStudents as IEnumerable<StudentResultDto>;
 }
-
+@Html.AntiForgeryToken()
 <div class="container-fluid mt-4">
     <!-- Header -->
     <div class="mb-4">
@@ -132,24 +134,28 @@
 </div>
 
 <script>
+    const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
     // Single Add
     document.querySelectorAll('.add-single').forEach(btn => {
-        btn.addEventListener('click', async function() {
-            const studentId = this.dataset.studentId;
-            const groupId = this.dataset.groupId;
+        btn.addEventListener('click', async function () {
+            const studentId = parseInt(this.dataset.studentId);
+            const groupId = parseInt(this.dataset.groupId);
 
             try {
-                const response = await fetch('/StudentGroup/Enroll', {
+                const response = await fetch('/Enrollment/Enroll', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        'RequestVerificationToken': csrfToken
                     },
-                    body: JSON.stringify({
-                        studentId: parseInt(studentId),
-                        groupId: parseInt(groupId)
-                    })
+                    body: JSON.stringify({ studentId, groupId })
                 });
+
+                if (!response.ok) {
+                    alert('Server xatosi: ' + response.status);
+                    return;
+                }
 
                 const result = await response.json();
                 if (result.success) {
@@ -165,21 +171,26 @@
 
     // Single Remove
     document.querySelectorAll('.remove-single').forEach(btn => {
-        btn.addEventListener('click', async function() {
-            if (!confirm('Ushbu talab-ni o\'chirishni xohlaymisiz?')) return;
+        btn.addEventListener('click', async function () {
+            if (!confirm("Ushbu talabani o'chirishni xohlaymisiz?")) return;
 
-            const studentId = this.dataset.studentId;
-            const groupId = this.dataset.groupId;
+            const studentId = parseInt(this.dataset.studentId);
+            const groupId = parseInt(this.dataset.groupId);
 
             try {
-                const response = await fetch('/StudentGroup/Remove', {
+                const response = await fetch('/Enrollment/Remove', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': csrfToken
                     },
-                    body: `studentId=${studentId}&groupId=${groupId}`
+                    body: JSON.stringify({ studentId, groupId })
                 });
+
+                if (!response.ok) {
+                    alert('Server xatosi: ' + response.status);
+                    return;
+                }
 
                 const result = await response.json();
                 if (result.success) {
@@ -194,64 +205,62 @@
     });
 
     // Bulk Add
-    document.getElementById('bulkAddBtn')?.addEventListener('click', async function() {
-        if (!confirm('Barcha talab-larni qo\'shishni xohlaymisiz?')) return;
+    document.getElementById('bulkAddBtn')?.addEventListener('click', async function () {
+        if (!confirm("Barcha talabalarni qo'shishni xohlaymisiz?")) return;
 
         const groupId = @group.Id;
-        const studentIds = Array.from(document.querySelectorAll('.add-single')).map(btn =>
-            parseInt(btn.dataset.studentId)
-        );
+        const studentIds = Array.from(document.querySelectorAll('.add-single'))
+            .map(btn => parseInt(btn.dataset.studentId));
 
         try {
-            const response = await fetch('/StudentGroup/BulkEnroll', {
+            const response = await fetch('/Enrollment/BulkEnroll', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    'RequestVerificationToken': csrfToken
                 },
-                body: JSON.stringify({
-                    groupId: groupId,
-                    studentIds: studentIds
-                })
+                body: JSON.stringify({ groupId, studentIds })
             });
+
+            if (!response.ok) {
+                alert('Server xatosi: ' + response.status);
+                return;
+            }
 
             const result = await response.json();
             alert(result.message);
-            if (result.success) {
-                location.reload();
-            }
+            if (result.success) location.reload();
         } catch (error) {
             alert('Xatolik: ' + error.message);
         }
     });
 
     // Bulk Remove
-    document.getElementById('bulkRemoveBtn')?.addEventListener('click', async function() {
-        if (!confirm('Tanlangan talaba-larni o\'chirishni xohlaymisiz?')) return;
+    document.getElementById('bulkRemoveBtn')?.addEventListener('click', async function () {
+        if (!confirm("Barcha talabalarni o'chirishni xohlaymisiz?")) return;
 
         const groupId = @group.Id;
-        const studentIds = Array.from(document.querySelectorAll('.remove-single')).map(btn =>
-            parseInt(btn.dataset.studentId)
-        );
+        const studentIds = Array.from(document.querySelectorAll('.remove-single'))
+            .map(btn => parseInt(btn.dataset.studentId));
 
         try {
-            const response = await fetch('/StudentGroup/BulkRemove', {
+            const response = await fetch('/Enrollment/BulkRemove', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    'RequestVerificationToken': csrfToken
                 },
-                body: JSON.stringify({
-                    groupId: groupId,
-                    studentIds: studentIds
-                })
+                body: JSON.stringify({ groupId, studentIds })
             });
+
+            if (!response.ok) {
+                alert('Server xatosi: ' + response.status);
+                return;
+            }
 
             const result = await response.json();
             alert(result.message);
-            if (result.success) {
-                location.reload();
-            }
+            if (result.success) location.reload();
         } catch (error) {
             alert('Xatolik: ' + error.message);
         }
