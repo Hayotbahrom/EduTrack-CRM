@@ -41,12 +41,24 @@ public class StudentGroupService : IStudentGroupService
         var group = await _groupRepository.SelectByIdAsync(dto.GroupId)
             ?? throw new CustomException(404, "Guruh topilmadi");
 
-        // Allaqachon ro'yxatda borligini tekshir
+        // Allaqachon ro'yxatda borligini tekshir (soft delete qilinganlari ham qaytadi)
         var existingEnrollment = await _studentGroupRepository.SelectAsync(
             sg => sg.StudentId == dto.StudentId && sg.GroupId == dto.GroupId);
 
         if (existingEnrollment != null)
-            throw new CustomException(400, "Bu o'quvchi allaqachon bu guruha ro'yxatdan o'tgan");
+        {
+            // Faol ro'yxat - qaytadan qo'shib bo'lmaydi
+            if (!existingEnrollment.IsDeleted)
+                throw new CustomException(400, "Bu o'quvchi allaqachon bu guruha ro'yxatdan o'tgan");
+
+            // Ilgari chiqarilgan - composite key (StudentId, GroupId) tufayli yangi qator
+            // qo'sha olmaymiz, shuning uchun mavjud qatorni qayta faollashtiramiz
+            existingEnrollment.IsDeleted = false;
+            existingEnrollment.UpdatedAt = DateTime.UtcNow;
+
+            var reactivated = await _studentGroupRepository.UpdateAsync(existingEnrollment);
+            return await MapStudentGroupToResultDto(reactivated);
+        }
 
         // Yangi StudentGroup yaratish
         var studentGroup = new StudentGroup
@@ -67,11 +79,12 @@ public class StudentGroupService : IStudentGroupService
     public async Task<bool> RemoveStudentAsync(int studentId, int groupId)
     {
         var studentGroup = await _studentGroupRepository.SelectAsync(
-            sg => sg.StudentId == studentId && sg.GroupId == groupId)
+            sg => sg.StudentId == studentId && sg.GroupId == groupId && sg.IsDeleted == false)
             ?? throw new CustomException(404, "Bu o'quvchi bu guruhda ro'yxatda yo'q");
 
-        await _studentGroupRepository.DeleteAsync(studentGroup.Id);
-        return true;
+        // StudentGroup composite key'li (StudentId, GroupId), Id ustuni esa doim 0 —
+        // shuning uchun DeleteAsync(int id) emas, entity overload ishlatiladi
+        return await _studentGroupRepository.DeleteAsync(studentGroup);
     }
 
     // =====================================================
@@ -82,9 +95,9 @@ public class StudentGroupService : IStudentGroupService
         var group = await _groupRepository.SelectByIdAsync(groupId)
             ?? throw new CustomException(404, "Guruh topilmadi");
 
-        var studentGroups = _studentGroupRepository.SelectAll()
-            .Where(sg => sg.GroupId == groupId)
-            .ToList();
+        var studentGroups = await _studentGroupRepository.SelectAll()
+            .Where(sg => sg.GroupId == groupId && sg.IsDeleted == false)
+            .ToListAsync();
 
         var result = new List<StudentGroupResultDto>();
 
@@ -105,7 +118,7 @@ public class StudentGroupService : IStudentGroupService
             ?? throw new CustomException(404, "O'quvchi topilmadi");
 
         var studentGroups = await _studentGroupRepository.SelectAll()
-            .Where(sg => sg.StudentId == studentId)
+            .Where(sg => sg.StudentId == studentId && sg.IsDeleted == false)
             .Include(sg => sg.Group)
             .Include(sg => sg.Student)
             .ToListAsync();
@@ -125,9 +138,9 @@ public class StudentGroupService : IStudentGroupService
     // =====================================================
     public async Task<int> GetStudentCountByGroupAsync(int groupId)
     {
-        var count = _studentGroupRepository.SelectAll()
-            .Where(sg => sg.GroupId == groupId)
-            .Count();
+        var count = await _studentGroupRepository.SelectAll()
+            .Where(sg => sg.GroupId == groupId && sg.IsDeleted == false)
+            .CountAsync();
 
         return count;
     }
